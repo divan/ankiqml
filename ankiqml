@@ -1,0 +1,124 @@
+#!/usr/bin/python
+
+import sys, os
+sys.path[0] = "/usr/share/ankiqml"
+
+from PySide import QtCore
+from PySide.QtGui import *
+from PySide.QtCore import *
+from PySide.QtDeclarative import QDeclarativeView
+import anki
+
+class DecksModel(QAbstractListModel):
+
+    NameRole = Qt.UserRole + 1
+    PathRole = Qt.UserRole + 2
+
+    def __init__(self, parent = None):
+        QAbstractListModel.__init__(self, parent)
+        self.setRoleNames({
+            DecksModel.NameRole : 'deckName',
+            DecksModel.PathRole : 'deckPath',
+            Qt.DisplayRole : 'display' 
+            })
+        self._data = []
+
+    def rowCount(self, index):
+        return len(self._data)
+
+    def data(self, index, role):
+        d = self._data[index.row()]
+
+        if role == Qt.DisplayRole:
+            return d['name']
+        elif role == Qt.DecorationRole:
+            return Qt.black
+        elif role == DecksModel.NameRole:
+            return d['deckName']
+        elif role == DecksModel.PathRole:
+            return d['deckPath']
+        return None
+
+    def populate(self):
+        path="/home/user/devel/decks"
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        dirList=os.listdir(path)
+        for fname in dirList:
+            if fname.endswith(".anki"):
+                print fname
+                self._data.append({'name':fname, 'deckName': fname, 'deckPath':path+'/'+fname})
+
+class DeckWrapper(QtCore.QObject):
+
+    def __init__(self, parent = None):
+        QtCore.QObject.__init__(self, parent)
+        self.opened = False
+        self.finished = False
+    
+    @QtCore.Slot(str)
+    def openDeck(self, s):
+        self.deck = anki.DeckStorage.Deck(s, backup=False)
+        self.opened = True
+        self.deck.startSession()
+
+    @QtCore.Slot()
+    def getCard(self):
+        if not self.opened:
+            return
+        self.card = self.deck.getCard()
+        if not self.card:
+            self.finished = True
+
+    @QtCore.Slot(result=str)
+    def getQuestion(self):
+        if not self.opened:
+            return ""
+        return self.card.htmlQuestion()
+
+    @QtCore.Slot(result=str)
+    def getAnswer(self):
+        if not self.opened:
+            return ""
+        return self.card.htmlAnswer()
+
+    @QtCore.Slot(int)
+    def answerCard(self, quality):
+        if not self.opened:
+            return
+        self.deck.answerCard(self.card, quality)
+
+    @QtCore.Slot(result=bool)
+    def Finished(self):
+        return self.finished
+
+    @QtCore.Slot(result=str)
+    def DeckFinishedMsg(self):
+        if self.finished:
+            return self.deck.deckFinishedMsg()
+
+    @QtCore.Slot()
+    def FinishDeck(self):
+        self.deck.save()
+        self.deck.s.flush()
+        self.deck.close()
+        self.opened = False
+        self.finished = False
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    view = QDeclarativeView()
+    url = QUrl('/usr/share/ankiqml/qml/view.qml')
+
+    decksModel = DecksModel()
+    decksModel.populate()
+    deck = DeckWrapper()
+
+    ctx = view.rootContext()
+    ctx.setContextProperty('Deck', deck)
+    ctx.setContextProperty('decksModel', decksModel)
+
+    view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
+    view.setSource(url)
+    view.showFullScreen()
+    sys.exit(app.exec_())
