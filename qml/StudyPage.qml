@@ -6,7 +6,7 @@ Page {
     property alias deckPath: ankiStudy.deckPath
     StudyWindow {
         id: ankiStudy
-		anchors.centerIn: parent
+        anchors.centerIn: parent
     }
 
     ToolBarLayout {

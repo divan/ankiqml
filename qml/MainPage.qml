@@ -4,13 +4,13 @@ import com.nokia.meego 1.0
 Page {
     id: mainPage
     tools: mainToolBar
-	DeckManager {
-		id: ankiDecks
-		anchors.centerIn: parent
-	}
+    DeckManager {
+        id: ankiDecks
+        anchors.centerIn: parent
+    }
 
     ToolBarLayout {
-        id: mainToolBar 
+        id: mainToolBar
 
         ToolIcon {
             iconId: "icon-m-toolbar-back";

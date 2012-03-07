@@ -3,9 +3,8 @@ import Qt 4.7
 Rectangle {
     id: editWindow
     anchors.fill: parent
-	property string deckPath: ""
+    property string deckPath: ""
     color: "white"
-    visible: false
     Rectangle {
         border.color: "green"
         border.width: 10
@@ -41,17 +40,17 @@ Rectangle {
     }
     EditWindowButton {
         id: btn2
-        anchors.top: btn1.bottom 
+        anchors.top: btn1.bottom
         anchors.right: editWindow.right
     }
     EditWindowButton {
         id: btn3
-        anchors.top: btn2.bottom 
+        anchors.top: btn2.bottom
         anchors.right: editWindow.right
     }
     EditWindowButton {
         id: btn4
-        anchors.top: btn3.bottom 
+        anchors.top: btn3.bottom
         anchors.right: editWindow.right
     }
 }

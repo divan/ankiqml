@@ -20,8 +20,7 @@ Item {
         MouseArea {
            anchors.fill: parent
            onClicked: {
-               ankiStudy.deckPath = deckPath;
-               root.state = "Study";
+               pageStack.push(Qt.resolvedUrl("DeckPage.qml"), { deckPath: deckPath });
            }
         }
     }
@@ -42,8 +41,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                ankiEdit.deckPath = deckPath;
-                root.state = "Edit";
+                pageStack.push(Qt.resolvedUrl("EditPage.qml"), { deckPath: deckPath });
             }
         }
     }

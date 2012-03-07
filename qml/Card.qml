@@ -1,16 +1,16 @@
 import Qt 4.7
- 
+
 Rectangle {
-	id: card
+    id: card
     width: parent.width
-	property string question: ""
-	property string answer: ""
+    property string question: ""
+    property string answer: ""
     property real fontScale: 2.5
     signal clicked()
- 
+
     Text {
-		id: text
-		font.pointSize: 34
+        id: text
+        font.pointSize: 34
         anchors.centerIn: parent
         width: parent.width
         height: parent.height
@@ -18,13 +18,13 @@ Rectangle {
         textFormat: Text.RichText
         wrapMode: Text.Wrap
     }
-	MouseArea {
+    MouseArea {
         anchors.fill: parent
         onClicked: card.clicked()
-	}
+    }
 
-	states: [
-		State {
+    states: [
+        State {
             name: "Question"
             StateChangeScript {
                 name: "onQuestion"
@@ -32,21 +32,19 @@ Rectangle {
                     text.text = adjustFontSize(card.question);
                 }
             }
-			PropertyChanges { target: card; color: "white" }
-			PropertyChanges { target: ankiEaseButtons; state: "" }
-		},
-		State {
-			name: "Answer"
+            PropertyChanges { target: card; color: "white" }
+        },
+        State {
+            name: "Answer"
             StateChangeScript {
                 name: "onQuestion"
                 script: {
                     text.text = adjustFontSize(card.answer);
                 }
             }
-			PropertyChanges { target: card; color: "green" }
-			PropertyChanges { target: ankiEaseButtons; state: "Show" }
-		}
-	]
+            PropertyChanges { target: card; color: "white" }
+        }
+    ]
 
     function adjustFontSize(str) {
         console.log("Adjusting font...");

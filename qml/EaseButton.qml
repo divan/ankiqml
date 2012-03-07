@@ -1,38 +1,30 @@
-import Qt 4.7
+import QtQuick 1.1
+import com.nokia.meego 1.1
 
-Rectangle {
-	id: easeButton
-	width: easeButtons.width / 5
-	height: 100
-	color: "blue"
-	property string name: ""
-	property int quality: 0
+Button {
+    id: easeButton
+    property int quality: 0
     signal answer(int quality)
+    checked: false
+    checkable: false
 
-	Text {
-		id: easeButtonText
-		font.pointSize: 24
-		anchors.centerIn: parent
-		text: name
-	}
+    platformStyle: ButtonStyle {
+         fontFamily: "Arial"
+         fontPixelSize: 28
+         fontCapitalization: Font.SmallCaps
+         fontWeight: Font.Bold
+         horizontalAlignment: Text.AlignHCenter
+         textColor: "black"
+         pressedTextColor: "red"
+         disabledTextColor: "gray"
+         checkedTextColor: "black"
+         buttonHeight: 100
+    }
 
-	MouseArea {
-		anchors.fill: parent
-		onClicked: {
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
             answer(quality);
-		}
-		onPressed: {
-			easeButton.state = "Pressed"
-		}
-		onReleased: {
-			easeButton.state = ""
-		}
-	}
-
-	states: [
-		State {
-			name: "Pressed"
-			PropertyChanges { target: easeButton; color: "red" }
-		}
-	]
+        }
+    }
 }

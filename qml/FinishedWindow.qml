@@ -16,7 +16,6 @@ Rectangle {
         anchors.fill: parent
         onClicked: {
             finishedWindow.state = "";
-            root.state = "DeckManager"; 
         }
     }
 
