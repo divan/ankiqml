@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.6
 
 import sys, os
 sys.path[0] = "/usr/share/ankiqml"
@@ -13,18 +13,33 @@ class DecksModel(QAbstractListModel):
 
     NameRole = Qt.UserRole + 1
     PathRole = Qt.UserRole + 2
+    FactCountRole = Qt.UserRole + 2
 
     def __init__(self, parent = None):
         QAbstractListModel.__init__(self, parent)
         self.setRoleNames({
             DecksModel.NameRole : 'deckName',
             DecksModel.PathRole : 'deckPath',
+            DecksModel.FactCountRole : 'deckFactCount',
             Qt.DisplayRole : 'display' 
             })
         self._data = []
 
+    @QtCore.Slot(result=int)
+    def getCount(self):
+        return len(self._data)
+
     def rowCount(self, index):
         return len(self._data)
+
+    @QtCore.Slot(int, str, str)
+    def setData(self, index, role, value):
+        self._data[index][role] = value
+
+    @QtCore.Slot(int, str, result=str)
+    def getData(self, index, role):
+        d = self._data[index]
+        return d[role]
 
     def data(self, index, role):
         d = self._data[index.row()]
@@ -37,6 +52,8 @@ class DecksModel(QAbstractListModel):
             return d['deckName']
         elif role == DecksModel.PathRole:
             return d['deckPath']
+        elif role == DecksModel.FactCountRole:
+            return d['deckFactCount']
         return None
 
     def populate(self):
@@ -55,12 +72,28 @@ class DeckWrapper(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.opened = False
         self.finished = False
-    
+
     @QtCore.Slot(str)
     def openDeck(self, s):
         self.deck = anki.DeckStorage.Deck(s, backup=False)
         self.opened = True
+        print self.getDeckInfo("name")
+
+    @QtCore.Slot()
+    def closeDeck(self):
+        self.deck.save()
+        self.deck.s.flush()
+        self.deck.close()
+        self.opened = False
+
+    @QtCore.Slot()
+    def startSession(self):
         self.deck.startSession()
+        
+    @QtCore.Slot()
+    def stopSession(self):
+        self.deck.stopSession()
+        self.finished = False
 
     @QtCore.Slot()
     def getCard(self):
@@ -97,13 +130,20 @@ class DeckWrapper(QtCore.QObject):
         if self.finished:
             return self.deck.deckFinishedMsg()
 
-    @QtCore.Slot()
-    def FinishDeck(self):
-        self.deck.save()
-        self.deck.s.flush()
-        self.deck.close()
-        self.opened = False
-        self.finished = False
+    @QtCore.Slot(str, result=str)
+    def getDeckInfo(self, key):
+        if self.opened == False:
+            return ""
+        self.deckInfo = {
+            "name": self.deck.name(),
+            "description": `self.deck.description`,
+            "cardCount": `self.deck.cardCount`,
+            "factCount": `self.deck.factCount`,
+            "revCount": `self.deck.revCount`,
+            "newCount": `self.deck.newCount`,
+        }
+        return self.deckInfo.get(key, "")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

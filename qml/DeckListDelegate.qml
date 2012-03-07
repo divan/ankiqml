@@ -9,14 +9,20 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 10
         Column {
+            anchors.centerIn: parent
+            width: parent.width
             Text {
+                id: labelMain
                 text: deckName
                 font.pointSize: 24
                 font.bold: true
+                anchors.horizontalCenter: parent.horizontalCenter
             }
             Text {
-                text: deckPath
+                id: labelSmall
+                text: deckFactCount + " " + qsTr("facts")
                 font.pointSize: 20
+                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
         MouseArea {
@@ -24,27 +30,6 @@ Rectangle {
            onClicked: {
                pageStack.push(Qt.resolvedUrl("DeckPage.qml"), { deckPath: deckPath });
            }
-        }
-    }
-    Rectangle {
-        id: addButton
-        anchors.right: parent.right
-        anchors.top: parent.top
-        height: parent.height
-        width: 100
-        color: "transparent"
-        Text {
-            anchors.fill: parent
-            text: "+"
-            font.bold: true
-            font.pointSize: 54
-            color: "green"
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                pageStack.push(Qt.resolvedUrl("EditPage.qml"), { deckPath: deckPath });
-            }
         }
     }
 }

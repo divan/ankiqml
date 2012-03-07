@@ -18,7 +18,7 @@ Page {
         }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
-            onClicked: launchMenu()
+            onClicked: ankiDecks.loadDecks()
         }
     }
 }

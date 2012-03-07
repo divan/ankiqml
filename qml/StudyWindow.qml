@@ -55,12 +55,14 @@ Rectangle {
     function startStudy() {
         console.log("Start Study");
         Deck.openDeck(deckPath);
+        Deck.startSession();
         showNextCard();
     }
 
     function endStudy() {
         console.log("End Study");
         Deck.closeDeck();
+        Deck.stopSession();
     }
 
     function gotAnswer(quality) {
@@ -73,7 +75,7 @@ Rectangle {
         if (Deck.Finished())
         {
             state = "Finished";
-            Deck.closeDeck();
+            endStudy(); 
         }
         else
         {
