@@ -13,7 +13,7 @@ class DecksModel(QAbstractListModel):
 
     NameRole = Qt.UserRole + 1
     PathRole = Qt.UserRole + 2
-    FactCountRole = Qt.UserRole + 2
+    FactCountRole = Qt.UserRole + 3
 
     def __init__(self, parent = None):
         QAbstractListModel.__init__(self, parent)
@@ -35,6 +35,7 @@ class DecksModel(QAbstractListModel):
     @QtCore.Slot(int, str, str)
     def setData(self, index, role, value):
         self._data[index][role] = value
+        self.emit(QtCore.SIGNAL("dataChanged()"))
 
     @QtCore.Slot(int, str, result=str)
     def getData(self, index, role):
@@ -64,7 +65,7 @@ class DecksModel(QAbstractListModel):
         for fname in dirList:
             if fname.endswith(".anki"):
                 print fname
-                self._data.append({'name':fname, 'deckName': fname, 'deckPath':path+'/'+fname})
+                self._data.append({'name':fname, 'deckName': fname, 'deckPath':path+'/'+fname, 'deckFactCount': 100})
 
 class DeckWrapper(QtCore.QObject):
 
