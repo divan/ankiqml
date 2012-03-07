@@ -1,20 +1,22 @@
 import Qt 4.7
 
-Item {
+Rectangle {
     height: 90
     width: parent.width
+    border.width: 1
+    border.color: "green"
     Item {
-        width: parent.width * 0.8
-        height: parent.height
+        anchors.fill: parent
+        anchors.margins: 10
         Column {
             Text {
                 text: deckName
-                font.pointSize: 32
+                font.pointSize: 24
                 font.bold: true
             }
             Text {
                 text: deckPath
-                font.pointSize: 24
+                font.pointSize: 20
             }
         }
         MouseArea {

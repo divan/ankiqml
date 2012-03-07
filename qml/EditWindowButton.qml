@@ -5,5 +5,5 @@ Rectangle {
     width: 100
     height: 100
     border.color: "red"
-    border.width: 10
+    border.width: 1
 }

@@ -4,19 +4,18 @@ Rectangle {
     id: deckManager
     anchors.fill: parent
     ListView {
-        width: 600
-        height: 400
         anchors.fill: parent
         model: decksModel
         header: Component {
             Rectangle {
-                height: 90
+                height: 80
                 width: parent.width
-                color: "gray"
+                color: "#444"
                 Text {
-                    text: "Decks"
+                    text: qsTr("Decks")
                     anchors.centerIn: parent
                     font.pointSize: 32
+                    color: "white"
                 }
             }
         }

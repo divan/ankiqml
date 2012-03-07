@@ -7,7 +7,7 @@ Rectangle {
     color: "white"
     Rectangle {
         border.color: "green"
-        border.width: 10
+        border.width: 1
         height: editWindow.height / 2
         width: editWindow.width - 100
         anchors.top: editWindow.top
@@ -17,11 +17,13 @@ Rectangle {
             text: deckPath
             anchors.fill: parent
             font.pointSize: 32
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
     Rectangle {
-        border.color: "green"
-        border.width: 10
+        border.color: "blue"
+        border.width: 1
         height: editWindow.height / 2
         width: editWindow.width - 100
         anchors.bottom: editWindow.bottom
@@ -31,6 +33,8 @@ Rectangle {
             text: deckPath
             font.pointSize: 32
             anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
     EditWindowButton {
