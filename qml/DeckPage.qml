@@ -20,6 +20,18 @@ Page {
             }
         }
         ToolIcon {
+            iconId: "icon-m-toolbar-refresh";
+            onClicked: {
+                console.log("Sync pressed");
+            }
+        }
+        ToolIcon {
+            iconId: "icon-m-toolbar-edit";
+            onClicked: {
+                console.log("Edit pressed");
+            }
+        }
+        ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
             onClicked: launchMenu()
         }
