@@ -24,8 +24,13 @@ Rectangle {
     states: [
         State {
             name: "Finished"
+            StateChangeScript {
+                name: "onFinished"
+                script: { sharedToolBar.setTools(defaultTools, "replace"); }
+            }
             PropertyChanges { target: finishedWindow; state: "Show" }
             PropertyChanges { target: ankiEaseButtons; state: "" }
+            PropertyChanges { target: sharedToolBar; visible: true }
         },
         State {
             name: "Question"

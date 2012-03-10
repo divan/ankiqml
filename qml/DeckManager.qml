@@ -39,7 +39,6 @@ Rectangle {
             var factCount = Deck.getDeckInfo("factCount");
             Deck.closeDeck();
             console.log("Updating " + name);
-            delay(100);
             decksModel.setData(i, "deckName", name);
             decksList.model.setData(i, "deckFactCount", factCount);
             console.log("Updated " + name + ": " + factCount);

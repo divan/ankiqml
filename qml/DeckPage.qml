@@ -20,20 +20,28 @@ Page {
             }
         }
         ToolIcon {
+            iconId: "icon-m-toolbar-edit";
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("EditPage.qml"), { deckPath: deckPath });
+            }
+        }
+        ToolIcon {
             iconId: "icon-m-toolbar-refresh";
             onClicked: {
                 console.log("Sync pressed");
             }
         }
         ToolIcon {
-            iconId: "icon-m-toolbar-edit";
-            onClicked: {
-                console.log("Edit pressed");
-            }
-        }
-        ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
             onClicked: launchMenu()
+        }
+    }
+
+    onStatusChanged: {
+        // restore toolbar after StudyWindow
+        if (status == PageStatus.Active) {
+            sharedToolBar.setTools(defaultTools);
+            sharedToolBar.visible = true;
         }
     }
 }
