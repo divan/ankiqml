@@ -7,19 +7,7 @@ Rectangle {
         id: decksList
         anchors.fill: parent
         model: decksModel
-        header: Component {
-            Rectangle {
-                height: 80
-                width: parent.width
-                color: "#444"
-                Text {
-                    text: qsTr("Decks")
-                    anchors.centerIn: parent
-                    font.pointSize: 32
-                    color: "white"
-                }
-            }
-        }
+        header: PageHeader { text: qsTr("Decks") }
         cacheBuffer: 800 
         delegate: Component { DeckListDelegate{} }
     }

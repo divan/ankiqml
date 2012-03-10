@@ -5,10 +5,15 @@ Rectangle {
     anchors.fill: parent
     property string deckPath: ""
     color: "grey"
+    PageHeader {
+        id: header
+        text: qsTr("Add new fact")
+    }
     Column {
         id: fieldsColumn
         spacing: 10
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: header.bottom
         width: parent.width * 0.8
     }
 
