@@ -42,6 +42,7 @@ Page {
         if (status == PageStatus.Active) {
             sharedToolBar.setTools(defaultTools);
             sharedToolBar.visible = true;
+            ankiDeck.updateDeckInfo();
         }
     }
 }

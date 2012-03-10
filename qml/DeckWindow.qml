@@ -60,10 +60,14 @@ Rectangle {
         }
     }
 
-    Component.onCompleted: {
+    function updateDeckInfo() {
         Deck.openDeck(deckPath);
         nameText.text = Deck.getDeckInfo("name");
         factsText.text = Deck.getDeckInfo("factCount") + " " + qsTr("facts");
         Deck.closeDeck();
+        console.log("debug");
+    }
+
+    Component.onCompleted: {
     }
 }
