@@ -145,6 +145,28 @@ class DeckWrapper(QtCore.QObject):
         }
         return self.deckInfo.get(key, "")
 
+    @QtCore.Slot(result="QVariantList")
+    def CurrentModelFields(self):
+        fields = []
+        model = self.deck.currentModel
+        for fieldModel in model.fieldModels:
+            fields.append(fieldModel.name)
+        return fields
+
+    @QtCore.Slot("QVariantMap", result=bool)
+    def AddFact(self, map):
+        if self.opened == False:
+            return False
+
+        fact = self.deck.newFact()
+        for i in range(0, len(map.keys())):
+            fact.__setitem__(map.keys()[i], map.values()[i])
+        if self.deck.factIsInvalid(fact):
+            return False
+
+        self.deck.addFact(fact)
+
+        return True
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

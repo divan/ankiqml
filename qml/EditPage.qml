@@ -19,9 +19,22 @@ Page {
                 pageStack.pop();
             }
         }
+        ToolButton {
+            id: addButton
+            text: "Add"
+            onClicked: ankiEdit.addFact()
+        }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
             onClicked: launchMenu()
+        }
+    }
+
+    onStatusChanged: {
+        // restore toolbar after StudyWindow
+        if (status == PageStatus.Active) {
+            sharedToolBar.setTools(defaultTools);
+            sharedToolBar.visible = true;
         }
     }
 }

@@ -4,57 +4,43 @@ Rectangle {
     id: editWindow
     anchors.fill: parent
     property string deckPath: ""
-    color: "white"
-    Rectangle {
-        border.color: "green"
-        border.width: 1
-        height: editWindow.height / 2
-        width: editWindow.width - 100
-        anchors.top: editWindow.top
-        anchors.left: editWindow.left
-        TextEdit {
-            id: questionText
-            text: deckPath
-            anchors.fill: parent
-            font.pointSize: 32
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+    color: "grey"
+    Column {
+        id: fieldsColumn
+        spacing: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width * 0.8
+    }
+
+    Component.onCompleted: {
+        Deck.openDeck(deckPath);
+        var field;
+        var fieldNames = Deck.CurrentModelFields();
+        for (field in fieldNames)
+        {
+            var name = fieldNames[field];
+            var component = Qt.createComponent(Qt.resolvedUrl("EditWindowField.qml"));
+            var field = component.createObject(fieldsColumn, {"name": name});
+            if (field == null)
+                console.log("Cannot create field: " + component.errorString());
         }
+        Deck.closeDeck();
     }
-    Rectangle {
-        border.color: "blue"
-        border.width: 1
-        height: editWindow.height / 2
-        width: editWindow.width - 100
-        anchors.bottom: editWindow.bottom
-        anchors.left: editWindow.left
-        TextEdit {
-            id: answerText
-            text: deckPath
-            font.pointSize: 32
-            anchors.fill: parent
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+
+    function addFact()
+    {
+        var child;
+        var factMap = {};
+        for (var i = 0; i < fieldsColumn.children.length; ++i)
+        {
+            var name = fieldsColumn.children[i].children[0].children[0].text;
+            var value = fieldsColumn.children[i].children[0].children[1].text;
+            factMap[name] = value;
         }
-    }
-    EditWindowButton {
-        id: btn1
-        anchors.top: editWindow.top
-        anchors.right: editWindow.right
-    }
-    EditWindowButton {
-        id: btn2
-        anchors.top: btn1.bottom
-        anchors.right: editWindow.right
-    }
-    EditWindowButton {
-        id: btn3
-        anchors.top: btn2.bottom
-        anchors.right: editWindow.right
-    }
-    EditWindowButton {
-        id: btn4
-        anchors.top: btn3.bottom
-        anchors.right: editWindow.right
+        Deck.openDeck(deckPath);
+        Deck.startSession();
+        Deck.AddFact(factMap);
+        Deck.stopSession();
+        Deck.closeDeck();
     }
 }
