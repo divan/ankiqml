@@ -65,9 +65,5 @@ Rectangle {
         nameText.text = Deck.getDeckInfo("name");
         factsText.text = Deck.getDeckInfo("factCount") + " " + qsTr("facts");
         Deck.closeDeck();
-        console.log("debug");
-    }
-
-    Component.onCompleted: {
     }
 }

@@ -44,8 +44,22 @@ Rectangle {
         }
         Deck.openDeck(deckPath);
         Deck.startSession();
-        Deck.AddFact(factMap);
+        if (validateFields(factMap))
+            Deck.AddFact(factMap);
         Deck.stopSession();
         Deck.closeDeck();
+    }
+
+    function validateFields(map)
+    {
+        var res = true;
+        for (var i in map)
+        {
+            var str = map[i];
+            res = (str && str.length > 0);
+        }
+        if (res == false)
+            console.log("Fields are not valid");
+        return res;
     }
 }
