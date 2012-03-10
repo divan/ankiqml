@@ -39,14 +39,9 @@ anki_files += [
                ('share/applications', ['ankiqml.desktop']),
                ('share/icons/hicolor/64x64/apps', ['ankiqml.png']),
                ('share/ankiqml/qml', glob.glob('qml/*.qml')),
+               ('share/ankiqml/images', glob.glob('images/*.jpg')),
               ]
 
-print anki_files
-
-#      data_files=[('share/applications',['ankiqml.desktop']),
-#                  ('share/icons/hicolor/64x64/apps', ['ankiqml.png']),
-#		  anki_files,
-#                  ('share/ankiqml/qml', glob.glob('qml/*.qml')), ],)
 setup(name="ankiqml",
       scripts=['ankiqml'],
       version='0.1.0',

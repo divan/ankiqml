@@ -2,19 +2,24 @@ import Qt 4.7
 
 Rectangle {
     id: studyWindow
-    color: "#111111"
     anchors.fill: parent
     property string deckPath: ""
+    Image {
+        fillMode: Image.Tile
+        source: "../images/wood.jpg"
+    }
 
-    Column {
-        anchors.fill: parent
-        Card {
-            id: ankiCard
-            height: parent.height - ankiEaseButtons.height
-        }
-        EaseButtons {
-            id: ankiEaseButtons
-        }
+    Card {
+        id: ankiCard
+        width: studyWindow.width * 0.8
+        height: (studyWindow.height - 100) * 0.9
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -30
+    }
+    EaseButtons {
+        id: ankiEaseButtons
+        anchors.bottom: studyWindow.bottom
     }
 
     FinishedWindow {

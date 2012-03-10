@@ -2,7 +2,11 @@ import Qt 4.7
 
 Rectangle {
     id: card
-    width: parent.width
+    Image {
+        fillMode: Image.Tile
+        anchors.fill: parent
+        source: "../images/paper.jpg"
+    }
     property string question: ""
     property string answer: ""
     property real fontScale: 2.5
