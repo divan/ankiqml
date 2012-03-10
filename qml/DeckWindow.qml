@@ -13,7 +13,6 @@ Rectangle {
         spacing: 5
         Text {
             id: nameText
-            text: "Spanish Names"
             font.pointSize: 42
             font.bold: true
             anchors.horizontalCenter: parent.horizontalCenter
@@ -66,4 +65,6 @@ Rectangle {
         factsText.text = Deck.getDeckInfo("factCount") + " " + qsTr("facts");
         Deck.closeDeck();
     }
+
+    Component.onCompleted: updateDeckInfo()
 }
