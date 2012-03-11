@@ -52,23 +52,76 @@ Flipable {
             console.log("Card clicked");
         }
     }
-    states: State {
-        name: "back"
-        PropertyChanges { target: rotation; angle: 180 }
-        when: card.flipped
-    }
-    transform: Rotation {
-        id: rotation
-        origin.x: card.width/2
-        origin.y: card.height/2
-        axis.x: 0
-        axis.y: 1
-        axis.z: 0
-        angle: 0
-    }
-    transitions: Transition {
-        NumberAnimation { target: rotation; property: "angle"; duration: 250 }
-    }
+    states: [
+        State {
+            name: "back"
+            PropertyChanges { target: rotation; angle: 180 }
+            when: card.flipped
+        },
+        State {
+            name: ""
+            when: !card.flipped
+        }
+    ]
+    transform: [
+        Rotation {
+            id: rotation
+            origin.x: card.width/2
+            origin.y: card.height/2
+            axis.x: 0
+            axis.y: 1
+            axis.z: 0
+            angle: 0
+        },
+        Translate {
+            id: translate
+            x: 0
+        }
+    ]
+    transitions: [
+        Transition {
+            from: ""
+            to: "back"
+            NumberAnimation { target: rotation; property: "angle"; duration: 250 }
+        },
+        Transition {
+            from: "back"
+            to: ""
+            SequentialAnimation {
+                NumberAnimation {
+                    target: textQuestion
+                    property: "opacity"
+                    to: 0
+                    duration: 0
+                }
+                NumberAnimation {
+                    target: translate
+                    property: "x"
+                    to: -500
+                    duration: 250
+                    easing {
+                        type: Easing.InBack; amplitude: 1.0; period: 0.5;
+                    }
+                }
+                NumberAnimation { target: translate; property: "x"; to: 500; duration: 0 }
+                NumberAnimation {
+                    target: textQuestion
+                    property: "opacity"
+                    to: 1
+                    duration: 0
+                }
+                NumberAnimation {
+                    target: translate
+                    property: "x"
+                    to: 0
+                    duration: 250
+                    easing {
+                        type: Easing.OutBack; amplitude: 1.0; period: 1.5;
+                    }
+                }
+            }
+        }
+    ]
 
     function adjustFontSize(str) {
         console.log("Adjusting font...");
