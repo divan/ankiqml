@@ -20,7 +20,7 @@ Page {
             }
         }
         ToolIcon {
-            iconId: "icon-m-toolbar-edit";
+            iconId: "icon-m-toolbar-add";
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("EditPage.qml"), { deckPath: deckPath });
             }
