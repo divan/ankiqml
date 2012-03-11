@@ -1,54 +1,74 @@
-import Qt 4.7
+import QtQuick 1.1
 
-Rectangle {
+Flipable {
     id: card
-    Image {
-        fillMode: Image.Tile
-        anchors.fill: parent
-        source: "../images/paper.jpg"
-    }
-    property string question: ""
-    property string answer: ""
+    property alias question: textQuestion.text
+    property alias answer: textAnswer.text
     property real fontScale: 2.5
     signal clicked()
+    property bool flipped: false
 
-    Text {
-        id: text
-        font.pointSize: 34
-        anchors.centerIn: parent
-        width: parent.width
-        height: parent.height
-        verticalAlignment: Text.AlignVCenter
-        textFormat: Text.RichText
-        wrapMode: Text.Wrap
+    front: Item {
+        anchors.fill: parent
+        Image {
+            fillMode: Image.Tile
+            anchors.fill: parent
+            source: "../images/paper.jpg"
+        }
+        Text {
+            id: textQuestion
+            font.pointSize: 34
+            anchors.centerIn: parent
+            width: parent.width
+            height: parent.height
+            verticalAlignment: Text.AlignVCenter
+            textFormat: Text.RichText
+            wrapMode: Text.Wrap
+        }
+    }
+    back: Item {
+        anchors.fill: parent
+        Image {
+            fillMode: Image.Tile
+            anchors.fill: parent
+            source: "../images/paper.jpg"
+        }
+        Text {
+            id: textAnswer
+            font.pointSize: 34
+            anchors.centerIn: parent
+            width: parent.width
+            height: parent.height
+            verticalAlignment: Text.AlignVCenter
+            textFormat: Text.RichText
+            wrapMode: Text.Wrap
+        }
     }
     MouseArea {
         anchors.fill: parent
-        onClicked: card.clicked()
-    }
-
-    states: [
-        State {
-            name: "Question"
-            StateChangeScript {
-                name: "onQuestion"
-                script: {
-                    text.text = adjustFontSize(card.question);
-                }
-            }
-            PropertyChanges { target: card; color: "white" }
-        },
-        State {
-            name: "Answer"
-            StateChangeScript {
-                name: "onQuestion"
-                script: {
-                    text.text = adjustFontSize(card.answer);
-                }
-            }
-            PropertyChanges { target: card; color: "white" }
+        onClicked: {
+            card.flipped = !card.flipped;
+            card.clicked();
+            console.log("Card clicked");
         }
-    ]
+    }
+    states: State {
+        name: "back"
+        PropertyChanges { target: rotation; angle: 180 }
+        when: card.flipped
+    }
+    transform: Rotation {
+        id: rotation
+        origin.x: card.width/2
+        origin.y: card.height/2
+        axis.x: 0
+        axis.y: 1
+        axis.z: 0
+        angle: 0
+    }
+    transitions: Transition {
+        NumberAnimation { target: rotation; property: "angle"; duration: 250 }
+    }
 
     function adjustFontSize(str) {
         console.log("Adjusting font...");

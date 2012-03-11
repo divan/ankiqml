@@ -43,13 +43,13 @@ Rectangle {
                 name: "onQuestion"
                 script: { sharedToolBar.setTools(defaultTools, "replace"); }
             }
-            PropertyChanges { target: ankiCard; state: "Question" }
+            PropertyChanges { target: ankiCard; state: "" }
             PropertyChanges { target: ankiEaseButtons; state: "" }
             PropertyChanges { target: sharedToolBar; visible: true }
         },
         State{
             name: "Answer"
-            PropertyChanges { target: ankiCard; state: "Answer" }
+            PropertyChanges { target: ankiCard; state: "back" }
             PropertyChanges { target: ankiEaseButtons; state: "Show" }
             PropertyChanges { target: sharedToolBar; visible: false }
         }
