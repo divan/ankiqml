@@ -2,7 +2,7 @@ import QtQuick 1.1
 import com.nokia.meego 1.1
 
 Rectangle {
-    id: editWindow
+    id: deckWindow
     anchors.fill: parent
     color: "#777777"
     property string deckPath: ""
@@ -35,7 +35,7 @@ Rectangle {
                 Button {
                     text: qsTr("Start Reviewing")
                     height: 200
-                    width: editWindow.width * 0.6
+                    width: deckWindow.width * 0.6
                     font.pointSize: 28
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckPath: deckPath });
@@ -46,13 +46,13 @@ Rectangle {
                 Button {
                     text: qsTr("Limit")
                     height: 100
-                    width: editWindow.width * 0.3
+                    width: deckWindow.width * 0.3
                     checkable: true
                 } 
                 Button {
                     text: qsTr("Cram")
                     height: 100
-                    width: editWindow.width * 0.3
+                    width: deckWindow.width * 0.3
                     checkable: true
                 } 
             }
