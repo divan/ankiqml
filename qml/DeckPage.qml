@@ -22,7 +22,7 @@ Page {
         ToolIcon {
             iconId: "icon-m-toolbar-add";
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("EditPage.qml"), { deckPath: deckPath });
+                pageStack.push(Qt.createComponent("EditPage.qml"), { deckPath: deckPath });
             }
         }
         ToolIcon {
@@ -42,7 +42,12 @@ Page {
         if (status == PageStatus.Active) {
             sharedToolBar.setTools(defaultTools);
             sharedToolBar.visible = true;
-            ankiDeck.updateDeckInfo();
         }
+    }
+
+    // just wrapper to be accessible from
+    // other pages
+    function updateDeckInfo() {
+        ankiDeck.updateDeckInfo();
     }
 }

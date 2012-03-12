@@ -22,7 +22,10 @@ Page {
         ToolButton {
             id: addButton
             text: "Add"
-            onClicked: ankiEdit.addFact()
+            onClicked: {
+                ankiEdit.addFact();
+                deckPage.updateDeckInfo();
+            }
         }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
