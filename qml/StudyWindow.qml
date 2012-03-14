@@ -1,4 +1,5 @@
-import Qt 4.7
+import QtQuick 1.1
+import com.nokia.meego 1.1
 
 Rectangle {
     id: studyWindow
@@ -22,8 +23,12 @@ Rectangle {
         anchors.bottom: studyWindow.bottom
     }
 
-    FinishedWindow {
-        id: finishedWindow
+    QueryDialog {
+        id: finishedDialog
+        acceptButtonText: "OK"
+        onAccepted: {
+            pageStack.pop();
+        }
     }
 
     states: [
@@ -31,11 +36,13 @@ Rectangle {
             name: "Finished"
             StateChangeScript {
                 name: "onFinished"
-                script: { sharedToolBar.setTools(defaultTools, "replace"); }
+                script: {
+                    sharedToolBar.setTools(defaultTools, "replace"); 
+                    finishedDialog.message = Deck.DeckFinishedMsg();
+                    finishedDialog.open();
+                }
             }
-            PropertyChanges { target: finishedWindow; state: "Show" }
-            PropertyChanges { target: ankiEaseButtons; state: "" }
-            PropertyChanges { target: sharedToolBar; visible: true }
+            PropertyChanges { target: sharedToolBar; visible: false }
         },
         State {
             name: "Question"
@@ -71,8 +78,8 @@ Rectangle {
 
     function endStudy() {
         console.log("End Study");
-        Deck.closeDeck();
         Deck.stopSession();
+        Deck.closeDeck();
     }
 
     function gotAnswer(quality) {
