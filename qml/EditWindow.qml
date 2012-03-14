@@ -55,15 +55,16 @@ Rectangle {
                 Deck.AddFact(factMap);
             Deck.stopSession();
             Deck.closeDeck();
+            deckPage.updateDeckInfo();
         }
         else
         {
             if (Deck.EditFact(factMap))
             {
                 studyPage.onFactUpdated();
-                pageStack.pop();
             }
         }
+        pageStack.pop();
     }
 
     function validateFields(map)
