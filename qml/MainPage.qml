@@ -13,6 +13,17 @@ Page {
         id: mainToolBar
 
         ToolIcon {
+            iconId: "icon-m-toolbar-add";
+            onClicked: {
+            }
+        }
+        ToolIcon {
+            iconId: "icon-m-toolbar-refresh";
+            onClicked: {
+                console.log("Sync decks pressed");
+            }
+        }
+        ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
             onClicked: ankiDecks.loadDecks()
             anchors.right: (parent === undefined) ? undefined : parent.right
