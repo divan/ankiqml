@@ -5,6 +5,18 @@ Rectangle {
     width: parent.width
     border.width: 1
     border.color: "green"
+
+    BorderImage {
+        id: background
+        anchors.fill: parent
+        // Fill page porders
+        anchors.leftMargin: -parent.anchors.leftMargin
+        anchors.rightMargin: -parent.anchors.rightMargin
+        visible: mouseArea.pressed
+        source: "image://theme/meegotouch-list-background-pressed-center"
+    }
+
+
     Item {
         anchors.fill: parent
         anchors.margins: 10
@@ -16,19 +28,20 @@ Rectangle {
                 text: deckName
                 font.pointSize: 24
                 font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Text {
-                id: labelSmall
-                text: deckFactCount + " " + qsTr("facts")
-                font.pointSize: 20
-                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
+
+        Image {
+            source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
+            anchors.right: parent.right;
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         MouseArea {
-           anchors.fill: parent
-           onClicked: {
-               pageStack.push(Qt.createComponent("DeckPage.qml"), { deckPath: deckPath });
+            id: mouseArea
+            anchors.fill: parent
+            onClicked: {
+                pageStack.push(Qt.createComponent("DeckPage.qml"), { deckPath: deckPath });
            }
         }
     }
