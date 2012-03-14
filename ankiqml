@@ -78,7 +78,6 @@ class DeckWrapper(QtCore.QObject):
     def openDeck(self, s):
         self.deck = anki.DeckStorage.Deck(s, backup=False)
         self.opened = True
-        print self.getDeckInfo("name")
 
     @QtCore.Slot()
     def closeDeck(self):
@@ -173,6 +172,7 @@ class DeckWrapper(QtCore.QObject):
         fact = self.deck.newFact()
         self._updateFact(fact, map)
         self.deck.addFact(fact)
+        self._reset()
 
         return True
 
@@ -201,7 +201,22 @@ class DeckWrapper(QtCore.QObject):
         fact.setModified(textChanged=True, deck=self.deck)
         self.deck.save()
         self.deck.s.refresh(fact)
+        self._reset()
 
+        return True
+
+    def _reset(self):
+        if self.opened == False:
+            return False
+        self.deck.refreshSession()
+        self.deck.reset()
+
+    @QtCore.Slot(result=bool)
+    def deleteCurrentCard(self):
+        if self.opened == False:
+            return False
+        self.deck.deleteCard(self.card.id)
+        self._reset()
         return True
 
 if __name__ == '__main__':
