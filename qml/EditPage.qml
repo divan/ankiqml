@@ -5,6 +5,7 @@ Page {
     id: editPage
     tools: defaultTools
     property alias deckPath: ankiEdit.deckPath
+    property alias factId: ankiEdit.factId
     EditWindow {
         id: ankiEdit
         anchors.centerIn: parent
@@ -21,10 +22,9 @@ Page {
         }
         ToolButton {
             id: addButton
-            text: "Add"
+            text: (factId) ? qsTr("Save") : qsTr("Add")
             onClicked: {
                 ankiEdit.addFact();
-                deckPage.updateDeckInfo();
             }
         }
         ToolIcon {

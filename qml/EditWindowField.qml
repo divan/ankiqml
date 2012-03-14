@@ -8,6 +8,7 @@ Rectangle {
     anchors.margins: 10
     color: "grey"
     property string name: ""
+    property string value: ""
     Column {
         spacing: 5
         Text {
@@ -17,6 +18,7 @@ Rectangle {
         }
         TextField {
             id: fieldTextEdit
+            text: value
             width: editField.width
         }
     }

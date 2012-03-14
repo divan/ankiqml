@@ -4,10 +4,12 @@ Rectangle {
     id: editWindow
     anchors.fill: parent
     property string deckPath: ""
+    property string factId: ""
+    property bool isNew: factId == ""
     color: "grey"
     PageHeader {
         id: header
-        text: qsTr("Add new fact")
+        text: (factId) ? qsTr("Edit fact") : qsTr("Add new fact")
     }
     Column {
         id: fieldsColumn
@@ -18,18 +20,21 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        Deck.openDeck(deckPath);
+        if (isNew)
+            Deck.openDeck(deckPath);
         var field;
         var fieldNames = Deck.CurrentModelFields();
         for (field in fieldNames)
         {
             var name = fieldNames[field];
             var component = Qt.createComponent(Qt.resolvedUrl("EditWindowField.qml"));
-            var field = component.createObject(fieldsColumn, {"name": name});
+            var value = (isNew) ? "" : Deck.getFactValue(name);
+            var field = component.createObject(fieldsColumn, {"name": name, 'value': value });
             if (field == null)
                 console.log("Cannot create field: " + component.errorString());
         }
-        Deck.closeDeck();
+        if (isNew)
+            Deck.closeDeck();
     }
 
     function addFact()
@@ -42,12 +47,23 @@ Rectangle {
             var value = fieldsColumn.children[i].children[0].children[1].text;
             factMap[name] = value;
         }
-        Deck.openDeck(deckPath);
-        Deck.startSession();
-        if (validateFields(factMap))
-            Deck.AddFact(factMap);
-        Deck.stopSession();
-        Deck.closeDeck();
+        if (isNew)
+        {
+            Deck.openDeck(deckPath);
+            Deck.startSession();
+            if (validateFields(factMap))
+                Deck.AddFact(factMap);
+            Deck.stopSession();
+            Deck.closeDeck();
+        }
+        else
+        {
+            if (Deck.EditFact(factMap))
+            {
+                studyPage.onFactUpdated();
+                pageStack.pop();
+            }
+        }
     }
 
     function validateFields(map)
