@@ -37,28 +37,20 @@ Rectangle {
             StateChangeScript {
                 name: "onFinished"
                 script: {
-                    sharedToolBar.setTools(defaultTools, "replace"); 
                     finishedDialog.message = Deck.DeckFinishedMsg();
                     finishedDialog.open();
                 }
             }
-            PropertyChanges { target: sharedToolBar; visible: false }
         },
         State {
             name: "Question"
-            StateChangeScript {
-                name: "onQuestion"
-                script: { sharedToolBar.setTools(defaultTools, "replace"); }
-            }
             PropertyChanges { target: ankiCard; state: "" }
             PropertyChanges { target: ankiEaseButtons; state: "" }
-            PropertyChanges { target: sharedToolBar; visible: true }
         },
         State{
             name: "Answer"
             PropertyChanges { target: ankiCard; state: "back" }
             PropertyChanges { target: ankiEaseButtons; state: "Show" }
-            PropertyChanges { target: sharedToolBar; visible: false }
         }
     ]
 

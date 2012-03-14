@@ -3,6 +3,7 @@ import com.nokia.meego 1.1
 
 Page {
     id: studyPage
+    tools: defaultTools
     property alias deckPath: ankiStudy.deckPath
     StudyWindow {
         id: ankiStudy
@@ -40,23 +41,19 @@ Page {
             }
             MenuItem {
                 text: qsTr("Delete Card")
-                onClicked: console.log("Delete Card")
+                onClicked: {
+                    console.log("Delete Card");
+                    Deck.deleteCurrentCard();
+                    refreshCard();
+                }
             }
         }
     }
 
-    function onFactUpdated()
+    function refreshCard()
     {
         ankiStudy.showNextCard();
     }
 
     Component.onCompleted: { ankiStudy.startStudy(); }
-
-    onStatusChanged: {
-        // restore toolbar after StudyWindow
-        if (status == PageStatus.Active) {
-            sharedToolBar.setTools(defaultTools);
-            sharedToolBar.visible = true;
-        }
-    }
 }

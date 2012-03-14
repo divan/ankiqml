@@ -37,14 +37,6 @@ Page {
         }
     }
 
-    onStatusChanged: {
-        // restore toolbar after StudyWindow
-        if (status == PageStatus.Active) {
-            sharedToolBar.setTools(defaultTools);
-            sharedToolBar.visible = true;
-        }
-    }
-
     // just wrapper to be accessible from
     // other pages
     function updateDeckInfo() {

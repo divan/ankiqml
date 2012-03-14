@@ -61,7 +61,7 @@ Rectangle {
         {
             if (Deck.EditFact(factMap))
             {
-                studyPage.onFactUpdated();
+                studyPage.refreshCard();
             }
         }
         pageStack.pop();
