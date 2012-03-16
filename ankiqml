@@ -74,6 +74,10 @@ class DeckWrapper(QtCore.QObject):
         self.opened = False
         self.finished = False
 
+    def __del__(self, parent = None):
+        self.stopSession()
+        self.closeDeck()
+
     @QtCore.Slot(str)
     def openDeck(self, s):
         self.deck = anki.DeckStorage.Deck(s, backup=False)
