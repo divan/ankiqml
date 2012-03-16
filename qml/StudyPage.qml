@@ -5,6 +5,7 @@ Page {
     id: studyPage
     tools: defaultTools
     property alias deckPath: ankiStudy.deckPath
+    property alias mode: ankiStudy.mode
     StudyWindow {
         id: ankiStudy
         anchors.centerIn: parent

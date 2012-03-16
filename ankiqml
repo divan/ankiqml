@@ -219,6 +219,10 @@ class DeckWrapper(QtCore.QObject):
         self._reset()
         return True
 
+    @QtCore.Slot()
+    def initCramming(self):
+        self.deck.setupCramScheduler("", "random()")
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     view = QDeclarativeView()

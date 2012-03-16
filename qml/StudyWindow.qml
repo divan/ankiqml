@@ -5,6 +5,7 @@ Rectangle {
     id: studyWindow
     anchors.fill: parent
     property string deckPath: ""
+    property string mode: "normal"
     Image {
         fillMode: Image.Tile
         source: "../images/wood.jpg"
@@ -64,6 +65,8 @@ Rectangle {
     function startStudy() {
         console.log("Start Study");
         Deck.openDeck(deckPath);
+        if (mode == "cram")
+            Deck.initCramming();
         Deck.startSession();
         showNextCard();
     }

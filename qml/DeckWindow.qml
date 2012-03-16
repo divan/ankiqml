@@ -38,18 +38,23 @@ Rectangle {
                     width: deckWindow.width * 0.6
                     font.pointSize: 28
                     onClicked: {
-                        pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckPath: deckPath });
+                        var mode = "normal"; // "cram", "learnMore", "reviewEarly"
+                        if (cramButton.checked)
+                            mode = "cram";
+                        pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckPath: deckPath, mode: mode });
                     }
                 } 
             }
             Column {
                 Button {
+                    id: limitButton
                     text: qsTr("Limit")
                     height: 100
                     width: deckWindow.width * 0.3
                     checkable: true
                 } 
                 Button {
+                    id: cramButton
                     text: qsTr("Cram")
                     height: 100
                     width: deckWindow.width * 0.3
