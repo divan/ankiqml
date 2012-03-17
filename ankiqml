@@ -85,6 +85,8 @@ class DeckWrapper(QtCore.QObject):
 
     @QtCore.Slot()
     def closeDeck(self):
+        if not self.opened:
+            return
         self.deck.save()
         self.deck.s.flush()
         self.deck.close()
@@ -96,6 +98,8 @@ class DeckWrapper(QtCore.QObject):
         
     @QtCore.Slot()
     def stopSession(self):
+        if  not self.opened:
+            return
         self.deck.stopSession()
         self.finished = False
 
@@ -223,9 +227,14 @@ class DeckWrapper(QtCore.QObject):
         self._reset()
         return True
 
-    @QtCore.Slot()
-    def initCramming(self):
-        self.deck.setupCramScheduler("", "random()")
+    @QtCore.Slot(str)
+    def setMode(self, mode):
+        if (mode == "cram"):
+            self.deck.setupCramScheduler("", "random()")
+        elif (mode == "learnMode"):
+            self.deck.setupLearnMoreScheduler()
+        elif (mode == "reviewEarly"):
+            self.deck.setupReviewEarlyScheduler()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
