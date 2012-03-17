@@ -1,2 +1,4 @@
 deb_dist/
 sdist-dsc.log
+anki/*.pyc
+anki/template/*.pyc
