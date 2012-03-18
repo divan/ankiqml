@@ -65,8 +65,7 @@ Rectangle {
     function startStudy() {
         console.log("Start Study");
         Deck.openDeck(deckPath);
-        if (mode == "cram")
-            Deck.initCramming();
+        Deck.setMode(mode);
         Deck.startSession();
         showNextCard();
     }
