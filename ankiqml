@@ -57,15 +57,23 @@ class DecksModel(QAbstractListModel):
             return d['deckFactCount']
         return None
 
+    @QtCore.Slot()
     def populate(self):
         path="/home/user/devel/decks"
         if not os.path.isdir(path):
             os.mkdir(path)
         dirList=os.listdir(path)
+        deckHelper = DeckWrapper()
+        del self._data[:]
         for fname in dirList:
             if fname.endswith(".anki"):
-                print fname
-                self._data.append({'name':fname, 'deckName': fname, 'deckPath':path+'/'+fname, 'deckFactCount': 100})
+                deckPath = path+'/'+fname 
+                deckHelper.openDeck(deckPath)  
+                name = deckHelper.getDeckInfo("name")
+                factCount = deckHelper.getDeckInfo("factCount")
+                self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount})
+                deckHelper.closeDeck()
+        self.reset()
 
 class DeckWrapper(QtCore.QObject):
 
@@ -242,7 +250,6 @@ if __name__ == '__main__':
     url = QUrl('/usr/share/ankiqml/qml/view.qml')
 
     decksModel = DecksModel()
-    decksModel.populate()
     deck = DeckWrapper()
 
     ctx = view.rootContext()

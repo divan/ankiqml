@@ -25,8 +25,17 @@ Page {
         }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
-            onClicked: ankiDecks.loadDecks()
+            onClicked: {
+                updateDecks();
+            }
             anchors.right: (parent === undefined) ? undefined : parent.right
         }
     }
+
+    function updateDecks()
+    {
+        decksModel.populate();
+    }
+    
+    Component.onCompleted: mainPage.updateDecks()
 }

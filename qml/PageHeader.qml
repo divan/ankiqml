@@ -2,7 +2,7 @@ import QtQuick 1.1
 
 Rectangle {
     height: 80
-    width: parent.width
+    width: (parent == undefined) ? undefined : parent.width
     color: "#444"
     property alias text: headerText.text
     Text {

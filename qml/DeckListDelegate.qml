@@ -9,7 +9,6 @@ Rectangle {
     BorderImage {
         id: background
         anchors.fill: parent
-        // Fill page porders
         anchors.leftMargin: -parent.anchors.leftMargin
         anchors.rightMargin: -parent.anchors.rightMargin
         visible: mouseArea.pressed
@@ -28,6 +27,12 @@ Rectangle {
                 text: deckName
                 font.pointSize: 24
                 font.bold: true
+            }
+            Text {
+                id: labelSub
+                text: deckFactCount + " " + qsTr("facts")
+                font.pointSize:18 
+                color: "gray"
             }
         }
 
