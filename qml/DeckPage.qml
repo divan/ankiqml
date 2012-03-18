@@ -4,7 +4,7 @@ import com.nokia.meego 1.1
 Page {
     id: deckPage
     tools: defaultTools
-    property alias deckPath: ankiDeck.deckPath
+    property alias deckName: ankiDeck.deckName
     DeckWindow {
         id: ankiDeck
         anchors.centerIn: parent
@@ -22,7 +22,7 @@ Page {
         ToolIcon {
             iconId: "icon-m-toolbar-add";
             onClicked: {
-                pageStack.push(Qt.createComponent("EditPage.qml"), { deckPath: deckPath });
+                pageStack.push(Qt.createComponent("EditPage.qml"), { deckName: deckName });
             }
         }
         ToolIcon {

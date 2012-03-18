@@ -4,7 +4,7 @@ import com.nokia.meego 1.0
 Page {
     id: editPage
     tools: defaultTools
-    property alias deckPath: ankiEdit.deckPath
+    property alias deckName: ankiEdit.deckName
     property alias factId: ankiEdit.factId
     EditWindow {
         id: ankiEdit

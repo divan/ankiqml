@@ -4,7 +4,7 @@ import com.nokia.meego 1.1
 Rectangle {
     id: studyWindow
     anchors.fill: parent
-    property string deckPath: ""
+    property string deckName: ""
     property string mode: "normal"
     Image {
         fillMode: Image.Tile
@@ -64,7 +64,7 @@ Rectangle {
 
     function startStudy() {
         console.log("Start Study");
-        Deck.openDeck(deckPath);
+        Deck.openDeck(deckName);
         Deck.setMode(mode);
         Deck.startSession();
         showNextCard();

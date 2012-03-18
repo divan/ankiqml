@@ -4,7 +4,7 @@ import com.nokia.meego 1.1
 Page {
     id: studyPage
     tools: defaultTools
-    property alias deckPath: ankiStudy.deckPath
+    property alias deckName: ankiStudy.deckName
     property alias mode: ankiStudy.mode
     StudyWindow {
         id: ankiStudy
@@ -24,7 +24,7 @@ Page {
         ToolIcon {
             iconId: "icon-m-toolbar-edit"
             onClicked: {
-                pageStack.push(Qt.createComponent("EditPage.qml"), { deckPath: deckPath, factId: Deck.getFactInfo("id") });
+                pageStack.push(Qt.createComponent("EditPage.qml"), { deckName: deckName, factId: Deck.getFactInfo("id") });
             }
         }
         ToolIcon {

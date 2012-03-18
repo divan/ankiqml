@@ -5,7 +5,7 @@ Rectangle {
     id: deckWindow
     anchors.fill: parent
     color: "#777777"
-    property string deckPath: ""
+    property string deckName: ""
 
     Column {
         width: parent.width * 0.9
@@ -41,7 +41,7 @@ Rectangle {
                         var mode = "normal"; // "cram", "learnMore", "reviewEarly"
                         if (cramButton.checked)
                             mode = "cram";
-                        pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckPath: deckPath, mode: mode });
+                        pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckName: deckName, mode: mode });
                     }
                 } 
             }
@@ -65,7 +65,7 @@ Rectangle {
     }
 
     function updateDeckInfo() {
-        Deck.openDeck(deckPath);
+        Deck.openDeck(deckName);
         nameText.text = Deck.getDeckInfo("name");
         factsText.text = Deck.getDeckInfo("factCount") + " " + qsTr("facts");
         Deck.closeDeck();

@@ -8,6 +8,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 from PySide.QtDeclarative import QDeclarativeView
 import anki
+from anki.stdmodels import BasicModel
 
 class DecksModel(QAbstractListModel):
 
@@ -68,7 +69,7 @@ class DecksModel(QAbstractListModel):
         for fname in dirList:
             if fname.endswith(".anki"):
                 deckPath = path+'/'+fname 
-                deckHelper.openDeck(deckPath)  
+                deckHelper.openDeck(fname)  
                 name = deckHelper.getDeckInfo("name")
                 factCount = deckHelper.getDeckInfo("factCount")
                 self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount})
@@ -87,8 +88,9 @@ class DeckWrapper(QtCore.QObject):
         self.closeDeck()
 
     @QtCore.Slot(str)
-    def openDeck(self, s):
-        self.deck = anki.DeckStorage.Deck(s, backup=False)
+    def openDeck(self, name):
+        path = self._pathFromName(name)
+        self.deck = anki.DeckStorage.Deck(path, backup=False)
         self.opened = True
 
     @QtCore.Slot()
@@ -243,6 +245,24 @@ class DeckWrapper(QtCore.QObject):
             self.deck.setupLearnMoreScheduler()
         elif (mode == "reviewEarly"):
             self.deck.setupReviewEarlyScheduler()
+
+    @QtCore.Slot(str, result=bool)
+    def addDeck(self, name):
+        path = self._pathFromName(name)
+        if (os.path.exists(path)):
+            return False
+        deck = anki.DeckStorage.Deck(path, backup=False)
+        deck.addModel(BasicModel())
+        deck.save()
+        deck.close()
+        return True
+
+    def _pathFromName(self, name):
+        path = "/home/user/devel/decks/" + name
+        if not name.lower().endswith(".anki"):
+            path += ".anki"
+        return path
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

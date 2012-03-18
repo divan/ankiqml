@@ -3,7 +3,7 @@ import Qt 4.7
 Rectangle {
     id: editWindow
     anchors.fill: parent
-    property string deckPath: ""
+    property string deckName: ""
     property string factId: ""
     property bool isNew: factId == ""
     color: "grey"
@@ -21,7 +21,7 @@ Rectangle {
 
     Component.onCompleted: {
         if (isNew)
-            Deck.openDeck(deckPath);
+            Deck.openDeck(deckName);
         var field;
         var fieldNames = Deck.CurrentModelFields();
         for (field in fieldNames)
@@ -49,7 +49,7 @@ Rectangle {
         }
         if (isNew)
         {
-            Deck.openDeck(deckPath);
+            Deck.openDeck(deckName);
             Deck.startSession();
             if (validateFields(factMap))
                 Deck.AddFact(factMap);

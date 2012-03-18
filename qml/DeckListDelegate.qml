@@ -46,7 +46,7 @@ Rectangle {
             id: mouseArea
             anchors.fill: parent
             onClicked: {
-                pageStack.push(Qt.createComponent("DeckPage.qml"), { deckPath: deckPath });
+                pageStack.push(Qt.createComponent("DeckPage.qml"), { deckName: deckName });
            }
         }
     }

@@ -8,6 +8,17 @@ Page {
         id: ankiDecks
         anchors.centerIn: parent
     }
+    AddNewDialog {
+        id: addNewDialog
+        onAccepted: {
+            var name = addNewDialog.getName();
+            if (Deck.addDeck(name))
+            {
+                pageStack.push(Qt.createComponent("DeckPage.qml"), { deckName: name });
+                updateDecks();
+            }
+        }
+    }
 
     ToolBarLayout {
         id: mainToolBar
@@ -15,6 +26,7 @@ Page {
         ToolIcon {
             iconId: "icon-m-toolbar-add";
             onClicked: {
+                addNewDialog.open();
             }
         }
         ToolIcon {
