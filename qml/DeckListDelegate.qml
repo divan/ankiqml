@@ -30,7 +30,7 @@ Rectangle {
             }
             Text {
                 id: labelSub
-                text: deckFactCount + " " + qsTr("facts")
+                text: deckFactCount + " " + qsTr("facts") + ", " + deckCardCount + " " + qsTr("cards")
                 font.pointSize:18 
                 color: "gray"
             }
