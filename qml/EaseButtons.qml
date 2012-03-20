@@ -6,33 +6,29 @@ Rectangle {
     width: parent.width
     height: 0
     opacity: 0
+    property bool successive: true
 
     ButtonRow {
         exclusive: false
         EaseButton {
             id: ease1
-            text: "Again"
+            text: qsTr("Again")
             quality: 1
         }
         EaseButton {
             id: ease2
-            text: "Hard"
+            text: successive ? qsTr("Good") : qsTr("Hard")
             quality: 2
         }
         EaseButton {
             id: ease3
-            text: "Good"
+            text: successive ? qsTr("Easy") : qsTr("Good")
             quality: 3
         }
         EaseButton {
             id: ease4
-            text: "Easy"
+            text: successive ? qsTr("Very Easy") : qsTr("Easy")
             quality: 4
-        }
-        EaseButton {
-            id: ease5
-            text: "Very Easy"
-            quality: 5
         }
     }
 
@@ -50,6 +46,5 @@ Rectangle {
         ease2.answer.connect(studyWindow.gotAnswer);
         ease3.answer.connect(studyWindow.gotAnswer);
         ease4.answer.connect(studyWindow.gotAnswer);
-        ease5.answer.connect(studyWindow.gotAnswer);
     }
 }

@@ -92,7 +92,8 @@ Rectangle {
         {
             ankiCard.question = Deck.getQuestion();
             ankiCard.answer = Deck.getAnswer();
-            state = "Question"
+            ankiEaseButtons.successive = Deck.getCardInfo("successive") > 0; 
+            state = "Question";
         }
     }
 

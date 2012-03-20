@@ -15,6 +15,7 @@ class DecksModel(QAbstractListModel):
     NameRole = Qt.UserRole + 1
     PathRole = Qt.UserRole + 2
     FactCountRole = Qt.UserRole + 3
+    CardCountRole = Qt.UserRole + 4
 
     def __init__(self, parent = None):
         QAbstractListModel.__init__(self, parent)
@@ -22,6 +23,7 @@ class DecksModel(QAbstractListModel):
             DecksModel.NameRole : 'deckName',
             DecksModel.PathRole : 'deckPath',
             DecksModel.FactCountRole : 'deckFactCount',
+            DecksModel.CardCountRole : 'deckCardCount',
             Qt.DisplayRole : 'display' 
             })
         self._data = []
@@ -56,6 +58,8 @@ class DecksModel(QAbstractListModel):
             return d['deckPath']
         elif role == DecksModel.FactCountRole:
             return d['deckFactCount']
+        elif role == DecksModel.CardCountRole:
+            return d['deckCardCount']
         return None
 
     @QtCore.Slot()
@@ -72,7 +76,8 @@ class DecksModel(QAbstractListModel):
                 deckHelper.openDeck(fname)  
                 name = deckHelper.getDeckInfo("name")
                 factCount = deckHelper.getDeckInfo("factCount")
-                self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount})
+                cardCount = deckHelper.getDeckInfo("cardCount")
+                self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount, 'deckCardCount': cardCount})
                 deckHelper.closeDeck()
         self.reset()
 
@@ -262,6 +267,16 @@ class DeckWrapper(QtCore.QObject):
         if not name.lower().endswith(".anki"):
             path += ".anki"
         return path
+
+    @QtCore.Slot(str, result=str)
+    def getCardInfo(self, key):
+        if self.opened == False:
+            return ""
+        self.cardInfo = {
+            "id": `self.card.id`,
+            "successive": `self.card.successive`,
+        }
+        return self.cardInfo.get(key, "")
 
 
 if __name__ == '__main__':
