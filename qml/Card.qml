@@ -7,6 +7,7 @@ Flipable {
     property real fontScale: 2.5
     signal clicked()
     property bool flipped: false
+    property real zoomFactor: 2.0
 
     front: Item {
         anchors.fill: parent
@@ -123,28 +124,19 @@ Flipable {
         }
     ]
 
-    function adjustFontSize(str) {
+    function adjustFonts() {
         console.log("Adjusting font...");
-        return str.replace("24px", "54px");
+        textQuestion.text = adjustFontSize(textQuestion.text);
+        textAnswer.text = adjustFontSize(textAnswer.text);
     }
 
-    function adjustFontSize2(str) {
-        console.log("Adjusting font 2...");
-        var div; // = document.createElement('div');
-        div = str;
-
-        var elements = div.getElementsByTagName("*");
-
-        for (i = 0; i < elements.length; ++i)
+    function adjustFontSize(str) {
+        var re = /font-size: (\d+)px/g;
+        var a;
+        while ((a = re.exec(str)) != null)
         {
-            if(elements[i].style.fontSize)
-            {
-                var s = parseInt(elements[i].style.fontSize.replace("px",""));
-            }
-
-            elements[i].style.fontSize = s*card.fontScale+"px"
+            str = str.replace(a[0], a[0].replace(a[1], a[1]*zoomFactor));
         }
-
-        console.log(div);
+        return str; 
     }
 }
