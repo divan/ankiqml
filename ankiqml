@@ -288,6 +288,13 @@ class DeckWrapper(QtCore.QObject):
         }
         return self.cardInfo.get(key, "")
 
+    @QtCore.Slot(result="QVariantMap")
+    def CurrentCardModels(self):
+        if self.opened == False:
+            return
+        print self.deck.currentModel.cardModels[0].name
+        return self.deck.currentModel.cardModels
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -33,7 +33,10 @@ Page {
         }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
-            onClicked: launchMenu()
+            onClicked: {
+                //launchMenu()
+                pageStack.push(Qt.createComponent("EditCardModels.qml"), { deckName: deckName });
+            }
         }
     }
 

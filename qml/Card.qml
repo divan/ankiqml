@@ -2,12 +2,11 @@ import QtQuick 1.1
 
 Flipable {
     id: card
-    property alias question: textQuestion.text
-    property alias answer: textAnswer.text
-    property real fontScale: 2.5
+    property string question: ""
+    property string answer: ""
     signal clicked()
     property bool flipped: false
-    property real zoomFactor: 2.0
+    property real zoomFactor: 1.0
 
     front: Item {
         anchors.fill: parent
@@ -124,18 +123,31 @@ Flipable {
         }
     ]
 
-    function adjustFonts() {
-        console.log("Adjusting font...");
-        textQuestion.text = adjustFontSize(textQuestion.text);
-        textAnswer.text = adjustFontSize(textAnswer.text);
+    function adjustFonts(zoom) {
+        if (zoom < 0.9 && zoomFactor > 0.3)
+            zoomFactor *= 0.8;
+        else if (zoom > 1.1 && zoomFactor < 5)
+            zoomFactor *= 1.2;
+        textQuestion.text = adjustFontSize(question, zoomFactor);
+        textAnswer.text = adjustFontSize(answer, zoomFactor);
     }
 
-    function adjustFontSize(str) {
+    function adjustFontSize(str, zoom) {
         var re = /font-size: (\d+)px/g;
         var a;
+        var isHtml = false;
         while ((a = re.exec(str)) != null)
         {
-            str = str.replace(a[0], a[0].replace(a[1], a[1]*zoomFactor));
+            isHtml = true;
+            var fz = Math.round(a[1]*zoom);
+            str = str.replace(a[0], a[0].replace(a[1], fz));
+        }
+
+        if (!isHtml)
+        {
+            // FIXME: do it more elegant
+            textQuestion.font.pointSize = 34 + 10 * zoom;
+            textAnswer.font.pointSize = 34 + 10 * zoom;
         }
         return str; 
     }

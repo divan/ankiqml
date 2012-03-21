@@ -11,6 +11,17 @@ Rectangle {
         source: "../images/wood.jpg"
     }
 
+    PinchArea {
+        id: pinchArea
+        anchors.fill: parent
+        enabled: true
+        pinch.minimumScale: 0.5
+        pinch.maximumScale: 6
+        onPinchFinished: {
+            ankiCard.adjustFonts(pinch.scale);
+        } 
+    }
+
     Card {
         id: ankiCard
         width: studyWindow.width * 0.8
@@ -92,7 +103,7 @@ Rectangle {
         {
             ankiCard.question = Deck.getQuestion();
             ankiCard.answer = Deck.getAnswer();
-            ankiCard.adjustFonts();
+            ankiCard.adjustFonts(1);
             ankiEaseButtons.successive = Deck.getCardInfo("successive") > 0; 
             state = "Question";
         }
