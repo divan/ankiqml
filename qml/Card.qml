@@ -146,8 +146,8 @@ Flipable {
         if (!isHtml)
         {
             // FIXME: do it more elegant
-            textQuestion.font.pointSize = 34 + 10 * zoom;
-            textAnswer.font.pointSize = 34 + 10 * zoom;
+            textQuestion.font.pointSize = 24 + 10 * zoom;
+            textAnswer.font.pointSize = 24 + 10 * zoom;
         }
         return str; 
     }
