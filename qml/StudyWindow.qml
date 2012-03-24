@@ -25,10 +25,9 @@ Rectangle {
     Card {
         id: ankiCard
         width: studyWindow.width * 0.8
-        height: (studyWindow.height - 100) * 0.9
+        height: studyWindow.height * 0.9
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -30
     }
     EaseButtons {
         id: ankiEaseButtons

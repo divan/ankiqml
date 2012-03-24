@@ -12,8 +12,8 @@ Rectangle {
     }
 
     Rectangle {
-        x: 30
-        y: 40
+        id: card1
+        y: cardTop.y + 9
         height: deckWindow.height * 0.9
         width: deckWindow.width * 0.9
         color: "white"
@@ -23,8 +23,8 @@ Rectangle {
         radius: 7
     }
     Rectangle {
-        x: 26
-        y: 36
+        id: card2
+        y: cardTop.y + 6
         height: deckWindow.height * 0.9
         width: deckWindow.width * 0.9
         color: "white"
@@ -34,8 +34,8 @@ Rectangle {
         radius: 7
     }
     Rectangle {
-        x: 23
-        y: 33
+        id: card3
+        y: cardTop.y + 3
         height: deckWindow.height * 0.9
         width: deckWindow.width * 0.9
         color: "white"
@@ -45,14 +45,14 @@ Rectangle {
         radius: 7
     }
     Rectangle {
-        x: 20
-        y: 30
+        id: cardTop
         height: deckWindow.height * 0.9
         width: deckWindow.width * 0.9
         color: "white"
         border.color: "black"
         border.width: 1
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
         radius: 7
         Rectangle {
             height: deckWindow.height * 0.85
@@ -89,11 +89,10 @@ Rectangle {
             id: cramButton
             text: qsTr("Cram")
             height: 100
-            width: (screen.currentOrientation == Screen.Portrait) ? parent.width * 0.9 : 250
+            width: parent.width * ((screen.currentOrientation == Screen.Portrait) ? 0.9 : 0.4)
             checkable: true
             anchors.left: parent.left
-            anchors.bottom: startButton.top
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: (screen.currentOrientation == Screen.Portrait) ? startButton.top : parent.bottom
             anchors.margins: 30
         }
 
@@ -101,13 +100,12 @@ Rectangle {
             id: startButton
             text: ""
             height: 150
-            width: (screen.currentOrientation == Screen.Portrait) ? parent.width * 0.9 : 150
+            width: parent.width * ((screen.currentOrientation == Screen.Portrait) ? 0.9 : 0.4)
             font.pointSize: 32
             font.bold: true
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.margins: 30
-            anchors.horizontalCenter: parent.horizontalCenter
             iconSource: "../images/start.png"
             onClicked: {
                 var mode = "normal"; // "cram", "learnMore", "reviewEarly"
@@ -121,7 +119,8 @@ Rectangle {
     function updateDeckInfo() {
         Deck.openDeck(deckName);
         nameText.text = Deck.getDeckInfo("name");
-        factsText.text = Deck.getDeckInfo("factCount") + " " + qsTr("facts");
+        factsText.text = Deck.getDeckInfo("factCount")+" "+qsTr("facts")+" ("+
+                        +Deck.getDeckInfo("cardCount")+" "+qsTr("cards")+")<br />";
         Deck.closeDeck();
     }
 
