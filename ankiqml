@@ -132,6 +132,7 @@ class DeckWrapper(QtCore.QObject):
     def getCard(self):
         if not self.opened:
             return
+        self.deck.mediaDir()
         self.card = self.deck.getCard()
         if not self.card:
             self.finished = True
