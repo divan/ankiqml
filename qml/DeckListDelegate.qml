@@ -1,4 +1,5 @@
-import Qt 4.7
+import QtQuick 1.1 
+import com.nokia.extras 1.1
 
 Rectangle {
     height: 90
@@ -30,7 +31,10 @@ Rectangle {
             }
             Text {
                 id: labelSub
-                text: deckFactCount + " " + qsTr("facts") + ", " + deckCardCount + " " + qsTr("cards") + ' | ' + qsTr("Due/New") + ": " + deckRevCount + "/" + deckNewCount
+                text: deckFactCount + " " + qsTr("facts") 
+                + ", " + deckCardCount + " " + qsTr("cards")
+                + ' | ' + qsTr("Due/New") + ": "
+                + ((deckRevCount == 0) ? deckRevCount : ("<font color='red'>" +  deckRevCount + "</font>")) +"/" + deckNewCount
                 font.pointSize:18 
                 color: "gray"
             }
