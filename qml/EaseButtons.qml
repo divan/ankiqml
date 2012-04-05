@@ -17,17 +17,17 @@ Rectangle {
         }
         EaseButton {
             id: ease2
-            text: successive ? qsTr("Good") : qsTr("Hard")
+            text: successive ? qsTr("Hard") : qsTr("Good")
             quality: 2
         }
         EaseButton {
             id: ease3
-            text: successive ? qsTr("Easy") : qsTr("Good")
+            text: successive ? qsTr("Good") : qsTr("Easy")
             quality: 3
         }
         EaseButton {
             id: ease4
-            text: successive ? qsTr("Very Easy") : qsTr("Easy")
+            text: successive ? qsTr("Easy") : qsTr("Very Easy")
             quality: 4
         }
     }
