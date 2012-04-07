@@ -1,24 +1,31 @@
 import QtQuick 1.1
-import com.nokia.meego 1.1
 
-Button {
+Rectangle {
     id: easeButton
     property int quality: 0
+    property alias text: label.text
+    property string borderColor: "gray"
     signal answer(int quality)
-    checked: false
-    checkable: false
+    opacity: 0.9
+    width: parent.width / 4.5
+    height: 100
+    radius: 20
+    gradient: Gradient {
+         GradientStop { position: 0.0; color: "white" }
+         GradientStop { position: 0.66; color: "lightgray" }
+         GradientStop { position: 1.0; color: "white" }
+    }
+    border.color: borderColor
+    border.width: 9 
 
-    platformStyle: ButtonStyle {
-         fontFamily: "Arial"
-         fontPixelSize: 28
-         fontCapitalization: Font.SmallCaps
-         fontWeight: Font.Bold
-         horizontalAlignment: Text.AlignHCenter
-         textColor: "black"
-         pressedTextColor: "red"
-         disabledTextColor: "gray"
-         checkedTextColor: "black"
-         buttonHeight: 100
+    Text {
+        id: label
+        anchors.centerIn: parent
+        font.pointSize: 24
+        font.bold: true
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        color: "black"
     }
 
     MouseArea {
