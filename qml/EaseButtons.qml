@@ -49,6 +49,8 @@ Rectangle {
     ]
 
     transitions: Transition {
+         from: ""
+         to: "Show"
          PropertyAnimation { properties: "height,opacity"; easing.type: Easing.InOutQuad }
      }
 

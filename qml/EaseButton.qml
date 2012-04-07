@@ -33,5 +33,24 @@ Rectangle {
         onClicked: {
             answer(quality);
         }
+        onPressed: {
+            easeButton.state = "pressed";
+        }
+        onReleased: {
+            easeButton.state = "";
+        }
     }
+
+    states: [
+        State {
+            name: "pressed"
+            PropertyChanges { target: easeButton; opacity: 0.4 } 
+            PropertyChanges { target: easeButton; y: 7 }
+        },
+        State {
+            name: ""
+            PropertyChanges { target: easeButton; opacity: 0.9 } 
+            PropertyChanges { target: easeButton; y: 0 }
+        }
+    ]
 }
