@@ -5,6 +5,7 @@ Page {
     id: deckPage
     tools: defaultTools
     property alias deckName: ankiDeck.deckName
+
     DeckWindow {
         id: ankiDeck
         anchors.centerIn: parent
@@ -29,6 +30,7 @@ Page {
             iconId: "icon-m-toolbar-refresh";
             onClicked: {
                 console.log("Sync pressed");
+                Deck.Sync();
             }
         }
         ToolIcon {

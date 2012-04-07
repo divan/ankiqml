@@ -29,5 +29,14 @@ PageStackWindow {
         toolBar: sharedToolBar
     }
 
+    SyncProgress {
+        id: syncProgress
+    }
+    
+    function updateSyncProgress(message) {
+        syncProgress.state = (message == "") ? "" : "active";
+        syncProgress.updateMessage(message);
+    }
+
     showStatusBar: false
 }

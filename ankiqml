@@ -7,8 +7,13 @@ from PySide import QtCore
 from PySide.QtGui import *
 from PySide.QtCore import *
 from PySide.QtDeclarative import QDeclarativeView
+from PySide.QtNetwork import QNetworkAccessManager
+from PySide.QtNetwork import QNetworkConfigurationManager
+from PySide.QtNetwork import QNetworkSession
 import anki
 from anki.stdmodels import BasicModel
+from anki.sync import SyncClient, HttpSyncServerProxy, copyLocalMedia
+from anki.db import sqlite
 
 class DecksModel(QAbstractListModel):
 
@@ -91,6 +96,68 @@ class DecksModel(QAbstractListModel):
                 deckHelper.closeDeck()
         self.reset()
 
+class SyncThread(QThread):
+    def initialize(self, deckWrapper, user, password):
+        self.deckWrapper = deckWrapper
+        self.user = user
+        self.password = password
+
+    def _goOnline(self):
+        manager = QNetworkConfigurationManager()
+        configuration = manager.defaultConfiguration()
+        self.syncSession = QNetworkSession(configuration)
+        self.syncSession.open()
+        self.syncSession.waitForOpened()
+        if manager.isOnline():
+            print "Network is accessible"
+        else:
+            print "Network is NOT accessible"
+            return False
+        return True
+    
+    def _goOffline(self):
+        self.syncSession.close()
+    
+    def run(self):
+        print "Sync Thread started"
+        self.emit(SIGNAL("stateChanged(QString)"), "Connecting")
+        sqlpath = self.deckWrapper.path.encode("utf-8")
+        c = sqlite.connect(sqlpath)
+        (localMod, localSync) = c.execute(
+                "select modified, lastSync from decks").fetchone()
+        c.close()
+        if not self._goOnline():
+            self.emit(SIGNAL("stateChanged(QString)"), "")
+            return
+        proxy = HttpSyncServerProxy(self.user, self.password)
+        proxy.connect("ankiqml-1.0")
+        self.emit(SIGNAL("stateChanged(QString)"), "Syncing")
+        if proxy.timediff > 300:
+            print "Time Diff is too high"
+            self.emit(SIGNAL("stateChanged(QString)"), "")
+            return
+        print proxy.timediff
+        print self.deckWrapper.syncName
+        if proxy.hasDeck(self.deckWrapper.syncName):
+            print "Deck exists on the server"
+        else:
+            print "Deck doesn't exits on the server"
+            proxy.createDeck(self.deckWrapper.syncName)
+        proxy.deckName = self.deckWrapper.syncName
+        remoteMod = proxy.modified()
+        remoteSync = proxy._lastSync()
+        deck = anki.DeckStorage.Deck(self.deckWrapper.path)
+        client = SyncClient(deck)
+        client.setServer(proxy)
+        sums = client.summaries()
+        client.localTime = 0
+        client.remoteTime = 0
+        ret = client.prepareFullSync()
+        client.fullSyncFromLocal(ret[1], ret[2])
+        self._goOffline()
+        deck.close()
+        self.emit(SIGNAL("stateChanged(QString)"), "")
+
 class DeckWrapper(QtCore.QObject):
 
     def __init__(self, parent = None):
@@ -104,9 +171,12 @@ class DeckWrapper(QtCore.QObject):
 
     @QtCore.Slot(str)
     def openDeck(self, name):
-        path = self._pathFromName(name)
-        self.deck = anki.DeckStorage.Deck(path, backup=False)
+        self.path = self._pathFromName(name)
+        self.name = name
+        self.deck = anki.DeckStorage.Deck(self.path, backup=False)
         self.opened = True
+        self.deck.enableSyncing()
+        self.syncName = self.deck.syncName
 
     @QtCore.Slot()
     def closeDeck(self):
@@ -257,7 +327,7 @@ class DeckWrapper(QtCore.QObject):
     def setMode(self, mode):
         if (mode == "cram"):
             self.deck.setupCramScheduler("", "random()")
-        elif (mode == "learnMode"):
+        elif (mode == "learnMore"):
             self.deck.setupLearnMoreScheduler()
         elif (mode == "reviewEarly"):
             self.deck.setupReviewEarlyScheduler()
@@ -296,6 +366,19 @@ class DeckWrapper(QtCore.QObject):
         print self.deck.currentModel.cardModels[0].name
         return self.deck.currentModel.cardModels
 
+    @QtCore.Slot(result=bool)
+    def Sync(self):
+        if self.opened == True:
+            print "Deck must be closed before sync"
+            return False
+        self.syncThread = SyncThread(self)
+        self.syncUser = ""
+        self.syncPassword = ""
+        self.syncThread.initialize(self, self.syncUser, self.syncPassword)
+        self.connect(self.syncThread, SIGNAL("stateChanged(QString)"), self.QMLRoot.updateSyncProgress)
+        self.syncThread.start()
+        return True
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -311,5 +394,9 @@ if __name__ == '__main__':
 
     view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
     view.setSource(url)
+
+    root = view.rootObject()
+    deck.QMLRoot = root
+
     view.showFullScreen()
     sys.exit(app.exec_())
