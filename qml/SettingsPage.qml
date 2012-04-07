@@ -4,12 +4,21 @@ import com.nokia.meego 1.0
 Page {
     id: settingsPage
     tools: defaultTools
+    PageHeader {
+        id: header
+        text: qsTr("Settings")
+    }
     Column {
         spacing: 5
-        anchors.fill: parent
-        PageHeader {
-            id: header
-            text: qsTr("Settings")
+        anchors.top: header.bottom
+        height: parent.height
+        width: parent.width * 0.9
+        anchors.horizontalCenter: parent.horizontalCenter
+        Text {
+            id: ankiwebLabel
+            text: qsTr("AnkiWeb Sync")
+            font.pointSize: 24
+            font.bold: true
         }
         Text {
             id: userLabel
@@ -18,6 +27,7 @@ Page {
         }
         TextField {
             id: userTextEdit
+            placeholderText: qsTr("AnkiWeb username")
             width: parent.width
         }
         Text {
@@ -27,6 +37,9 @@ Page {
         }
         TextField {
             id: passTextEdit
+            echoMode: TextInput.Password
+            validator: RegExpValidator { regExp: /^[\x00-\x7F]*$/ }
+            placeholderText: qsTr("AnkiWeb password")
             width: parent.width
         }
     }
