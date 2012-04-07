@@ -5,7 +5,8 @@ Rectangle {
     height: 90
     width: parent.width
     border.width: 1
-    border.color: "green"
+    border.color: "grey"
+    radius: 5
 
     BorderImage {
         id: background
