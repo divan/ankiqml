@@ -37,10 +37,24 @@ Page {
         }
         ToolIcon {
             iconId: "icon-m-toolbar-view-menu"
-            onClicked: {
-                updateDecks();
-            }
+            onClicked: mainMenu.open()
             anchors.right: (parent === undefined) ? undefined : parent.right
+        }
+    }
+
+    Menu {
+        id: mainMenu
+        content: MenuLayout {
+            MenuItem {
+                text: qsTr("Update decks info")
+                onClicked: updateDecks()
+            }
+            MenuItem {
+                text: qsTr("Settings")
+                onClicked: {
+                    pageStack.push(Qt.createComponent("SettingsPage.qml"));
+                }
+            }
         }
     }
 

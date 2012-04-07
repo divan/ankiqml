@@ -372,13 +372,29 @@ class DeckWrapper(QtCore.QObject):
             print "Deck must be closed before sync"
             return False
         self.syncThread = SyncThread(self)
-        self.syncUser = ""
-        self.syncPassword = ""
+        settings = Settings()
+        self.syncUser = settings.GetValue("Sync/Username") 
+        self.syncPassword = settings.GetValue("Sync/Password")
         self.syncThread.initialize(self, self.syncUser, self.syncPassword)
         self.connect(self.syncThread, SIGNAL("stateChanged(QString)"), self.QMLRoot.updateSyncProgress)
         self.syncThread.start()
         return True
 
+class Settings(QtCore.QObject):
+    def __init__(self, parent = None):
+        QtCore.QObject.__init__(self, parent)
+        QCoreApplication.setOrganizationName("divan")
+        QCoreApplication.setApplicationName("AnkiQML")
+        self.settings = QSettings()
+
+    @QtCore.Slot(str, str)
+    def SetValue(self, key, value):
+        self.settings.setValue(key, value)
+        self.settings.sync()
+
+    @QtCore.Slot(str, result=str)
+    def GetValue(self, key):
+        return self.settings.value(key)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -387,9 +403,11 @@ if __name__ == '__main__':
 
     decksModel = DecksModel()
     deck = DeckWrapper()
+    settings = Settings()
 
     ctx = view.rootContext()
     ctx.setContextProperty('Deck', deck)
+    ctx.setContextProperty('Settings', settings)
     ctx.setContextProperty('decksModel', decksModel)
 
     view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
