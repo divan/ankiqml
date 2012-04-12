@@ -120,7 +120,9 @@ Rectangle {
         Deck.openDeck(deckName);
         nameText.text = Deck.getDeckInfo("name");
         factsText.text = Deck.getDeckInfo("factCount")+" "+qsTr("facts")+" ("+
-                        +Deck.getDeckInfo("cardCount")+" "+qsTr("cards")+")<br />";
+                        +Deck.getDeckInfo("cardCount")+" "+qsTr("cards")+")<br />"
+                        +qsTr("Due/New") + ": " + Deck.getDeckInfo("revCount") + "/"
+                        +Deck.getDeckInfo("newCount");
         Deck.closeDeck();
     }
 
