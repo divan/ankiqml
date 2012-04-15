@@ -6,6 +6,7 @@ Rectangle {
     id: deckWindow
     anchors.fill: parent
     property string deckName: ""
+    property string mode: ""
     Image {
         fillMode: Image.Tile
         source: "../images/wood.jpg"
@@ -87,13 +88,13 @@ Rectangle {
             }
 
             Button {
-                id: cramButton
-                text: qsTr("Cram")
+                id: modeButton
                 height: 100
                 width: (screen.currentOrientation == Screen.Portrait) ? parent.width : parent.width * 0.45
-                checkable: true
+                checkable: false
                 anchors.bottom: (screen.currentOrientation == Screen.Portrait) ? startButton.top : parent.bottom
                 anchors.left: (screen.currentOrientation == Screen.Portrait) ? undefined : parent.left
+                onClicked: toggleMode()
             }
 
             Button {
@@ -107,13 +108,20 @@ Rectangle {
                 font.bold: true
                 iconSource: "../images/start.png"
                 onClicked: {
-                    var mode = "normal"; // "cram", "learnMore", "reviewEarly"
-                    if (cramButton.checked)
-                        mode = "cram";
                     pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckName: deckName, mode: mode });
                 }
             }
         }
+    }
+
+    function toggleMode() {
+        var modes = ["normal", "cram", "reviewEarly", "learnMore"];
+        var modesText = [qsTr("Normal"), qsTr("Cramming"), qsTr("Review Early"), qsTr("Learn More")];
+        var newIdx = modes.indexOf(mode) + 1;
+        if (newIdx >= modes.length)
+            newIdx = 0;
+        mode = modes[newIdx];
+        modeButton.text = modesText[newIdx];
     }
 
     function updateDeckInfo() {
@@ -126,5 +134,8 @@ Rectangle {
         Deck.closeDeck();
     }
 
-    Component.onCompleted: updateDeckInfo()
+    Component.onCompleted: {
+        updateDeckInfo();
+        toggleMode();
+    }
 }
