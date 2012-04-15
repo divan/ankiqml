@@ -55,6 +55,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         radius: 7
         Rectangle {
+            id: innerRect
             height: deckWindow.height * 0.85
             width: deckWindow.width * 0.85
             color: "transparent"
@@ -63,55 +64,54 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             radius: 7
-        }
-        Text {
-            id: nameText
-            width: parent.width * 0.9
-            font.bold: true
-            font.pointSize: 36
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.horizontalCenterOffset: 5
-            wrapMode: Text.Wrap
-            y: 20
-        }
+            Text {
+                id: nameText
+                width: parent.width * 0.9
+                font.bold: true
+                font.pointSize: 36
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: 5
+                wrapMode: Text.Wrap
+                y: 20
+            }
 
-        Text {
-            id: factsText
-            width: parent.width
-            font.pointSize: 24
-            font.bold: true
-            color: "gray"
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.horizontalCenterOffset: 60
-            anchors.top: nameText.bottom
-        }
-        Button {
-            id: cramButton
-            text: qsTr("Cram")
-            height: 100
-            width: parent.width * ((screen.currentOrientation == Screen.Portrait) ? 0.9 : 0.4)
-            checkable: true
-            anchors.left: parent.left
-            anchors.bottom: (screen.currentOrientation == Screen.Portrait) ? startButton.top : parent.bottom
-            anchors.margins: 30
-        }
+            Text {
+                id: factsText
+                width: parent.width
+                font.pointSize: 24
+                font.bold: true
+                color: "gray"
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: 60
+                anchors.top: nameText.bottom
+            }
 
-        Button {
-            id: startButton
-            text: ""
-            height: 150
-            width: parent.width * ((screen.currentOrientation == Screen.Portrait) ? 0.9 : 0.4)
-            font.pointSize: 32
-            font.bold: true
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: 30
-            iconSource: "../images/start.png"
-            onClicked: {
-                var mode = "normal"; // "cram", "learnMore", "reviewEarly"
-                if (cramButton.checked)
-                    mode = "cram";
-                pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckName: deckName, mode: mode });
+            Button {
+                id: cramButton
+                text: qsTr("Cram")
+                height: 100
+                width: (screen.currentOrientation == Screen.Portrait) ? parent.width : parent.width * 0.45
+                checkable: true
+                anchors.bottom: (screen.currentOrientation == Screen.Portrait) ? startButton.top : parent.bottom
+                anchors.left: (screen.currentOrientation == Screen.Portrait) ? undefined : parent.left
+            }
+
+            Button {
+                id: startButton
+                text: ""
+                height: 150
+                anchors.bottom: parent.bottom
+                anchors.right: (screen.currentOrientation == Screen.Portrait) ? undefined : parent.right
+                width: (screen.currentOrientation == Screen.Portrait) ? parent.width : parent.width * 0.5
+                font.pointSize: 32
+                font.bold: true
+                iconSource: "../images/start.png"
+                onClicked: {
+                    var mode = "normal"; // "cram", "learnMore", "reviewEarly"
+                    if (cramButton.checked)
+                        mode = "cram";
+                    pageStack.push(Qt.resolvedUrl("StudyPage.qml"), { deckName: deckName, mode: mode });
+                }
             }
         }
     }
