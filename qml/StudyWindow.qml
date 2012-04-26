@@ -89,6 +89,7 @@ Rectangle {
     function gotAnswer(quality) {
         Deck.answerCard(quality);
         showNextCard();
+        parent.updateStatsInfo();
     }
 
     function showNextCard() {

@@ -21,6 +21,11 @@ Page {
                 pageStack.pop();
             }
         }
+        ToolButton {
+            id: textButton
+            property int value: 0
+            text: value + " " + qsTr("cards left")
+        }
         ToolIcon {
             iconId: "icon-m-toolbar-edit"
             onClicked: {
@@ -56,5 +61,13 @@ Page {
         ankiStudy.showNextCard();
     }
 
-    Component.onCompleted: { ankiStudy.startStudy(); }
+    function updateStatsInfo()
+    {
+        textButton.value = Deck.getDeckInfo("revCount");
+    }
+
+    Component.onCompleted: {
+        ankiStudy.startStudy(); 
+        updateStatsInfo();
+    }
 }
