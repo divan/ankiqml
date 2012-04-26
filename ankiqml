@@ -15,6 +15,8 @@ from anki.stdmodels import BasicModel
 from anki.sync import SyncClient, HttpSyncServerProxy, copyLocalMedia
 from anki.db import sqlite
 
+DECKS_PATH="/home/user/MyDocs/Anki/"
+
 class DecksModel(QAbstractListModel):
 
     NameRole = Qt.UserRole + 1
@@ -36,10 +38,16 @@ class DecksModel(QAbstractListModel):
             Qt.DisplayRole : 'display' 
             })
         self._data = []
+        self._row_count = 0
 
-    @QtCore.Slot(result=int)
-    def getCount(self):
-        return len(self._data)
+    def _count(self):
+        print "Count getter"
+        return self._row_count
+
+    count_changed = QtCore.Signal()
+#   def count_changed(self): pass
+
+    count = QtCore.Property(unicode, _count, notify=count_changed)
 
     def rowCount(self, index):
         return len(self._data)
@@ -77,12 +85,13 @@ class DecksModel(QAbstractListModel):
 
     @QtCore.Slot()
     def populate(self):
-        path="/home/user/devel/decks"
+        path=DECKS_PATH
         if not os.path.isdir(path):
             os.mkdir(path)
         dirList=os.listdir(path)
         deckHelper = DeckWrapper()
         del self._data[:]
+        self._row_count = 0
         for fname in dirList:
             if fname.endswith(".anki"):
                 deckPath = path+'/'+fname 
@@ -93,6 +102,7 @@ class DecksModel(QAbstractListModel):
                 revCount = deckHelper.getDeckInfo("revCount")
                 newCount = deckHelper.getDeckInfo("newCount")
                 self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount, 'deckCardCount': cardCount, 'deckRevCount': revCount, 'deckNewCount': newCount})
+                self._row_count = self._row_count + 1
                 deckHelper.closeDeck()
         self.reset()
 
@@ -344,7 +354,7 @@ class DeckWrapper(QtCore.QObject):
         return True
 
     def _pathFromName(self, name):
-        path = "/home/user/devel/decks/" + name
+        path = DECKS_PATH + name
         if not name.lower().endswith(".anki"):
             path += ".anki"
         return path
