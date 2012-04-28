@@ -263,6 +263,11 @@ class DeckWrapper(QtCore.QObject):
         }
         return self.deckInfo.get(key, "")
 
+    @QtCore.Slot(result="QVariantMap")
+    def getStats(self):
+        self.stats = self.deck.getStats()
+        return self.stats
+
     @QtCore.Slot(result="QVariantList")
     def CurrentModelFields(self):
         fields = []

@@ -63,7 +63,8 @@ Page {
 
     function updateStatsInfo()
     {
-        textButton.value = Deck.getDeckInfo("revCount");
+        var stats = Deck.getStats();
+        textButton.value = stats["failed"] + stats["rev"] + stats["new"];
     }
 
     Component.onCompleted: {
