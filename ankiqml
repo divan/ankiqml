@@ -133,9 +133,13 @@ class SyncThread(QThread):
         self.emit(SIGNAL("stateChanged(QString)"), "Connecting")
         sqlpath = self.deckWrapper.path.encode("utf-8")
         c = sqlite.connect(sqlpath)
-        (localMod, localSync) = c.execute(
-                "select modified, lastSync from decks").fetchone()
+        (syncName, localMod, localSync) = c.execute(
+                    "select syncName, modified, lastSync from decks").fetchone()
         c.close()
+        if not syncName:
+            print "SyncName not specified"
+            return -2
+        syncName = os.path.splitext(os.path.basename(self.deckWrapper.path))[0]
         if not self._goOnline():
             self.emit(SIGNAL("stateChanged(QString)"), "")
             return
@@ -146,14 +150,12 @@ class SyncThread(QThread):
             print "Time Diff is too high"
             self.emit(SIGNAL("stateChanged(QString)"), "")
             return
-        print proxy.timediff
-        print self.deckWrapper.syncName
-        if proxy.hasDeck(self.deckWrapper.syncName):
+        if proxy.hasDeck(syncName):
             print "Deck exists on the server"
         else:
             print "Deck doesn't exits on the server"
-            proxy.createDeck(self.deckWrapper.syncName)
-        proxy.deckName = self.deckWrapper.syncName
+            proxy.createDeck(syncName)
+        proxy.deckName = syncName
         remoteMod = proxy.modified()
         remoteSync = proxy._lastSync()
         deck = anki.DeckStorage.Deck(self.deckWrapper.path)
@@ -185,7 +187,6 @@ class DeckWrapper(QtCore.QObject):
         self.name = name
         self.deck = anki.DeckStorage.Deck(self.path, backup=False)
         self.opened = True
-        self.deck.enableSyncing()
         self.syncName = self.deck.syncName
 
     @QtCore.Slot()
