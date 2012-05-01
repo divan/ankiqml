@@ -1,6 +1,6 @@
 #!/usr/bin/python2.6
 
-import sys, os
+import sys, os, time
 sys.path[0] = "/usr/share/ankiqml"
 
 from PySide import QtCore
@@ -109,6 +109,7 @@ class DecksModel(QAbstractListModel):
 class SyncThread(QThread):
     def initialize(self, deckWrapper, user, password):
         self.deckWrapper = deckWrapper
+        self.onlyMerge = False
         self.user = user
         self.password = password
 
@@ -158,16 +159,94 @@ class SyncThread(QThread):
         proxy.deckName = syncName
         remoteMod = proxy.modified()
         remoteSync = proxy._lastSync()
-        deck = anki.DeckStorage.Deck(self.deckWrapper.path)
-        client = SyncClient(deck)
+        minSync = min(localSync, remoteSync)
+        self.conflictResolution = None
+        if (localMod != remoteMod and minSync > 0 and
+            localMod > minSync and remoteMod > minSync):
+            self.emit(SIGNAL("syncConflicts"), syncName)
+            while not self.conflictResolution:
+                time.sleep(0.2)
+            if self.conflictResolution == "cancel":
+                # alert we're finished early
+                self.emit(SIGNAL("syncFinished"))
+                return -1
+        self.deck = anki.DeckStorage.Deck(self.deckWrapper.path)
+        client = SyncClient(self.deck)
         client.setServer(proxy)
-        sums = client.summaries()
-        client.localTime = 0
-        client.remoteTime = 0
-        ret = client.prepareFullSync()
-        client.fullSyncFromLocal(ret[1], ret[2])
+
+        start = time.time()
+        if client.prepareSync(proxy.timediff):
+            if self.deck.lastSync <= 0:
+                if client.remoteTime > client.localTime:
+                    self.conflictResolution = "keepRemote"
+                else:
+                    self.conflictResolution = "keepLocal"
+            changes = True
+            if not self.conflictResolution and not self.onlyMerge:
+                    print "Fetching summary from server..."
+                    sums = client.summaries()
+            if (self.conflictResolution or
+                self.onlyMerge or client.needFullSync(sums)):
+                print "Preparing full sync..."
+                if self.conflictResolution == "keepLocal":
+                    client.remoteTime = 0
+                elif self.conflictResolution == "keepRemote" or self.onlyMerge:
+                    client.localTime = 0
+                lastSync = self.deck.lastSync
+                ret = client.prepareFullSync()
+                if ret[0] == "fromLocal":
+                    if not self.conflictResolution:
+                        if lastSync <= 0 and not deckCreated:
+                            self.clobberChoice = None
+                            self.emit(SIGNAL("syncClobber"), syncName)
+                            while not self.clobberChoice:
+                                time.sleep(0.2)
+                            if self.clobberChoice == "cancel":
+                                # disable syncing on this deck
+                                c = sqlite.connect(sqlpath)
+                                c.execute(
+                                    "update decks set syncName = null, "
+                                    "lastSync = 0")
+                                c.commit()
+                                c.close()
+                                if not deck:
+                                    # alert we're finished early
+                                    self.emit(SIGNAL("syncFinished"))
+                                return True
+                    print "Uploading..."
+                    client.fullSyncFromLocal(ret[1], ret[2])
+                else:
+                    print "Downloading..."
+                    client.fullSyncFromServer(ret[1], ret[2])
+                print "Sync complete."
+            else:
+                # diff
+                print "Determining differences..."
+                payload = client.genPayload(sums)
+                # send payload
+                if not deck:
+                    pr = client.payloadChangeReport(payload)
+                    print "<br>" + pr + "<br>"
+                print "Transferring payload..."
+                res = client.server.applyPayload(payload)
+                # apply reply
+                print "Applying reply..."
+                client.applyPayloadReply(res)
+                # now that both sides have successfully applied, tell
+                # server to save, then save local
+                client.server.finish()
+                self.deck.lastLoaded = self.deck.modified
+                self.deck.s.commit()
+                print "Sync complete."
+        else:
+            changes = False
+            if disable:
+                print "Disabled by upgrade."
+            elif not deck:
+                print "No changes found."
+
         self._goOffline()
-        deck.close()
+        self.deck.close()
         self.emit(SIGNAL("stateChanged(QString)"), "")
 
 class DeckWrapper(QtCore.QObject):
