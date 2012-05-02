@@ -45,7 +45,6 @@ class DecksModel(QAbstractListModel):
         return self._row_count
 
     count_changed = QtCore.Signal()
-#   def count_changed(self): pass
 
     count = QtCore.Property(unicode, _count, notify=count_changed)
 
@@ -476,6 +475,34 @@ class DeckWrapper(QtCore.QObject):
         self.syncThread.start()
         return True
 
+    def _goOnline(self):
+        manager = QNetworkConfigurationManager()
+        configuration = manager.defaultConfiguration()
+        self.syncSession = QNetworkSession(configuration)
+        self.syncSession.open()
+        self.syncSession.waitForOpened()
+        if manager.isOnline():
+            print "Network is accessible"
+        else:
+            print "Network is NOT accessible"
+            return False
+        return True
+    
+    def _goOffline(self):
+        self.syncSession.close()
+
+    @QtCore.Slot()
+    def getPersonalDecks(self):
+        if not self._goOnline():
+            self.emit(SIGNAL("stateChanged(QString)"), "")
+            return
+        settings = Settings()
+        self.syncUser = settings.GetValue("Sync/Username") 
+        self.syncPassword = settings.GetValue("Sync/Password")
+        proxy = HttpSyncServerProxy(self.syncUser, self.syncPassword)
+        proxy.connect("ankiqml-1.0")
+        self.personalDecks.populate(proxy.availableDecks())
+
 class Settings(QtCore.QObject):
     def __init__(self, parent = None):
         QtCore.QObject.__init__(self, parent)
@@ -492,12 +519,58 @@ class Settings(QtCore.QObject):
     def GetValue(self, key):
         return self.settings.value(key)
 
+class PersonalDecksModel(QAbstractListModel):
+
+    NameRole = Qt.UserRole + 1
+
+    def __init__(self, parent = None):
+        QAbstractListModel.__init__(self, parent)
+        self.setRoleNames({
+            DecksModel.NameRole : 'Name',
+            Qt.DisplayRole : 'display' 
+            })
+        self._data = []
+        self._row_count = 0
+
+    def rowCount(self, index):
+        return len(self._data)
+
+    @QtCore.Slot(int, str, str)
+    def setData(self, index, role, value):
+        self._data[index][role] = value
+        self.emit(QtCore.SIGNAL("dataChanged()"))
+
+    @QtCore.Slot(int, str, result=str)
+    def getData(self, index, role):
+        d = self._data[index]
+        return d[role]
+
+    def data(self, index, role):
+        d = self._data[index.row()]
+
+        if role == Qt.DisplayRole:
+            return d['name']
+        elif role == Qt.DecorationRole:
+            return Qt.black
+        elif role == DecksModel.NameRole:
+            return d['Name']
+        return None
+
+    def populate(self, decks):
+        del self._data[:]
+        self._row_count = 0
+        for deckName in decks:
+            self._data.append({'name': deckName, 'Name': deckName})
+            self._row_count = self._row_count + 1
+        self.reset()
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     view = QDeclarativeView()
     url = QUrl('/usr/share/ankiqml/qml/view.qml')
 
     decksModel = DecksModel()
+    personalDecksModel = PersonalDecksModel()
     deck = DeckWrapper()
     settings = Settings()
 
@@ -505,12 +578,14 @@ if __name__ == '__main__':
     ctx.setContextProperty('Deck', deck)
     ctx.setContextProperty('Settings', settings)
     ctx.setContextProperty('decksModel', decksModel)
+    ctx.setContextProperty('personalDecksModel', personalDecksModel)
 
     view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
     view.setSource(url)
 
     root = view.rootObject()
     deck.QMLRoot = root
+    deck.personalDecks = personalDecksModel
 
     view.showFullScreen()
     sys.exit(app.exec_())

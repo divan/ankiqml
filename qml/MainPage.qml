@@ -46,6 +46,12 @@ Page {
         id: mainMenu
         content: MenuLayout {
             MenuItem {
+                text: qsTr("Sync Personal Decks")
+                onClicked: {
+                    pageStack.push(Qt.createComponent("PersonalDecksPage.qml"));
+                }
+            }
+            MenuItem {
                 text: qsTr("Update decks info")
                 onClicked: updateDecks()
             }
