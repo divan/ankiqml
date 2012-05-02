@@ -110,6 +110,7 @@ class SyncThread(QThread):
     def initialize(self, deckWrapper, user, password):
         self.deckWrapper = deckWrapper
         self.onlyMerge = False
+        self.disable = False
         self.user = user
         self.password = password
 
@@ -240,14 +241,14 @@ class SyncThread(QThread):
                 print "Sync complete."
         else:
             changes = False
-            if disable:
+            if self.disable:
                 print "Disabled by upgrade."
-            elif not deck:
+            elif not self.deck:
                 print "No changes found."
 
         self._goOffline()
         self.deck.close()
-        self.emit(SIGNAL("stateChanged(QString)"), "")
+        self.emit(SIGNAL("stateChanged(QString)"), "finished")
 
 class DeckWrapper(QtCore.QObject):
 

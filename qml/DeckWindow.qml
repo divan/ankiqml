@@ -135,7 +135,6 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        updateDeckInfo();
         toggleMode();
     }
 }

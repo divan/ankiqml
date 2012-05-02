@@ -55,7 +55,6 @@ Rectangle {
                 Deck.AddFact(factMap);
             Deck.stopSession();
             Deck.closeDeck();
-            deckPage.updateDeckInfo();
         }
         else
         {

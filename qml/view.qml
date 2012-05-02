@@ -5,6 +5,7 @@ PageStackWindow {
     id: root
 
     initialPage: mainPage
+    signal deckUpdated
 
     MainPage {id: mainPage}
 
@@ -34,8 +35,10 @@ PageStackWindow {
     }
     
     function updateSyncProgress(message) {
-        syncProgress.state = (message == "") ? "" : "active";
+        syncProgress.state = (message == "" || message == "finished") ? "" : "active";
         syncProgress.updateMessage(message);
+        if (message == "finished")
+            deckUpdated();
     }
 
     showStatusBar: false

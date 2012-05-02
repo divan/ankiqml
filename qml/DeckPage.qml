@@ -37,14 +37,16 @@ Page {
             iconId: "icon-m-toolbar-view-menu"
             onClicked: {
                 //launchMenu()
-                pageStack.push(Qt.createComponent("EditCardModels.qml"), { deckName: deckName });
             }
         }
     }
 
-    // just wrapper to be accessible from
-    // other pages
-    function updateDeckInfo() {
-        ankiDeck.updateDeckInfo();
+    Component.onCompleted: {
+        root.deckUpdated.connect(ankiDeck.updateDeckInfo);
+    }
+
+    onStatusChanged: {
+        if (status == PageStatus.Activating)
+            ankiDeck.updateDeckInfo();
     }
 }
