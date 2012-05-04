@@ -1,6 +1,6 @@
 #!/usr/bin/python2.6
 
-import sys, os, time
+import sys, os, time, re
 sys.path[0] = "/usr/share/ankiqml"
 
 from PySide import QtCore
@@ -41,7 +41,6 @@ class DecksModel(QAbstractListModel):
         self._row_count = 0
 
     def _count(self):
-        print "Count getter"
         return self._row_count
 
     count_changed = QtCore.Signal()
@@ -297,17 +296,22 @@ class DeckWrapper(QtCore.QObject):
         if not self.card:
             self.finished = True
 
+    def getCss(self):
+        # Strip font-size from css
+        css = re.sub("font-size:.*px;", "", self.deck.css)
+        return "<style>"+css+"</style>"
+
     @QtCore.Slot(result=str)
     def getQuestion(self):
         if not self.opened:
             return ""
-        return self.card.htmlQuestion()
+        return self.getCss() + self.card.htmlQuestion()
 
     @QtCore.Slot(result=str)
     def getAnswer(self):
         if not self.opened:
             return ""
-        return self.card.htmlAnswer()
+        return self.getCss() + self.card.htmlAnswer()
 
     @QtCore.Slot(int)
     def answerCard(self, quality):
