@@ -40,12 +40,9 @@ class DecksModel(QAbstractListModel):
         self._data = []
         self._row_count = 0
 
-    def _count(self):
+    @QtCore.Slot(result=int)
+    def count(self):
         return self._row_count
-
-    count_changed = QtCore.Signal()
-
-    count = QtCore.Property(unicode, _count, notify=count_changed)
 
     def rowCount(self, index):
         return len(self._data)
