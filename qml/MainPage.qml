@@ -25,9 +25,7 @@ Page {
 
         ToolIcon {
             iconId: "icon-m-toolbar-add";
-            onClicked: {
-                addNewDialog.open();
-            }
+            onClicked: addNewDeck()
         }
         ToolIcon {
             iconId: "icon-m-toolbar-refresh";
@@ -47,9 +45,7 @@ Page {
         content: MenuLayout {
             MenuItem {
                 text: qsTr("Sync Personal Decks")
-                onClicked: {
-                    pageStack.push(Qt.createComponent("PersonalDecksPage.qml"));
-                }
+                onClicked:syncPersonalDecks()
             }
             MenuItem {
                 text: qsTr("Update decks info")
@@ -57,9 +53,7 @@ Page {
             }
             MenuItem {
                 text: qsTr("Settings")
-                onClicked: {
-                    pageStack.push(Qt.createComponent("SettingsPage.qml"));
-                }
+                onClicked: openSettings()
             }
         }
     }
@@ -67,6 +61,18 @@ Page {
     function updateDecks()
     {
         decksModel.populate();
+    }
+
+    function syncPersonalDecks() {
+        pageStack.push(Qt.createComponent("PersonalDecksPage.qml"));
+    }
+    
+    function openSettings() {
+        pageStack.push(Qt.createComponent("SettingsPage.qml"));
+    }
+
+    function addNewDeck() {
+        addNewDialog.open();
     }
     
     Component.onCompleted: mainPage.updateDecks()
