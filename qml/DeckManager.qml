@@ -56,7 +56,9 @@ Rectangle {
         }
     }
 
-    Component.onCompleted: {
+    function toggleView() {
         emptyMsg.visible = (decksModel.count() == 0);
     }
+
+    Component.onCompleted: toggleView() 
 }

@@ -33,12 +33,16 @@ PageStackWindow {
     SyncProgress {
         id: syncProgress
     }
-    
+
     function updateSyncProgress(message) {
         syncProgress.state = (message == "" || message == "finished") ? "" : "active";
         syncProgress.updateMessage(message);
         if (message == "finished")
             deckUpdated();
+    }
+
+    function updateReloadProgress(value) {
+        mainPage.toggleView(value);
     }
 
     showStatusBar: false

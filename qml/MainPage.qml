@@ -20,6 +20,30 @@ Page {
         }
     }
 
+    Rectangle {
+        id: updateProgress
+        width: parent.width * 0.8
+        height: parent.height * 0.5
+        anchors.centerIn: parent
+        visible: false
+        gradient: Gradient {
+             GradientStop { position: 0.0; color: "white" }
+             GradientStop { position: 0.66; color: "lightgray" }
+             GradientStop { position: 1.0; color: "white" }
+        }
+        radius: 5
+        border.width: 2
+        border.color: "darkgray"
+        property int value: 0
+        Rectangle {
+            id: progressBar
+            width: parent.width * parent.value / 100
+            height: parent.height * 0.8
+            anchors.centerIn: parent
+            color: "green"
+        }
+    }
+
     ToolBarLayout {
         id: mainToolBar
 
@@ -60,13 +84,13 @@ Page {
 
     function updateDecks()
     {
-        decksModel.populate();
+        decksModel.reload();
     }
 
     function syncPersonalDecks() {
         pageStack.push(Qt.createComponent("PersonalDecksPage.qml"));
     }
-    
+
     function openSettings() {
         pageStack.push(Qt.createComponent("SettingsPage.qml"));
     }
@@ -74,6 +98,13 @@ Page {
     function addNewDeck() {
         addNewDialog.open();
     }
-    
-    Component.onCompleted: mainPage.updateDecks()
+
+    function toggleView(value) {
+        updateProgress.visible = (value < 100);
+        updateProgress.value = value;
+        if (value == 100)
+            ankiDecks.toggleView();
+    }
+
+    //Component.onCompleted: mainPage.updateDecks()
 }

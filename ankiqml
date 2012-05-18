@@ -78,8 +78,18 @@ class DecksModel(QAbstractListModel):
             return d['deckNewCount']
         return None
 
+    def initialize(self):
+        self.connect(self, SIGNAL("reloadUpdate(int)"), self.QMLRoot.updateReloadProgress)
+
+    @QtCore.Slot()
+    def reload(self):
+        self.thread = ReloadThread(self)
+        self.thread.initialize(self)
+        self.thread.start()
+
     @QtCore.Slot()
     def populate(self):
+        self.emit(SIGNAL("reloadUpdate(int)"), 0)
         path=DECKS_PATH
         if not os.path.isdir(path):
             os.mkdir(path)
@@ -87,8 +97,11 @@ class DecksModel(QAbstractListModel):
         deckHelper = DeckWrapper()
         del self._data[:]
         self._row_count = 0
+        total = len(dirList)
         for fname in dirList:
             if fname.endswith(".anki"):
+                progress = (self._row_count + 1) * 100 / (total + 1)
+                self.emit(SIGNAL("reloadUpdate(int)"), progress)
                 deckPath = path+'/'+fname 
                 deckHelper.openDeck(fname)  
                 name = deckHelper.getDeckInfo("name")
@@ -99,7 +112,15 @@ class DecksModel(QAbstractListModel):
                 self._data.append({'name':fname, 'deckName': name, 'deckPath':deckPath, 'deckFactCount': factCount, 'deckCardCount': cardCount, 'deckRevCount': revCount, 'deckNewCount': newCount})
                 self._row_count = self._row_count + 1
                 deckHelper.closeDeck()
+        self.emit(SIGNAL("reloadUpdate(int)"), 100)
         self.reset()
+
+class ReloadThread(QThread):
+    def initialize(self, deckModel):
+        self.deckModel = deckModel
+
+    def run(self):
+        self.deckModel.populate()
 
 class SyncThread(QThread):
     def initialize(self, deckWrapper, user, password):
@@ -586,6 +607,8 @@ if __name__ == '__main__':
     view.setSource(url)
 
     root = view.rootObject()
+    decksModel.QMLRoot = root
+    decksModel.initialize()
     deck.QMLRoot = root
     deck.personalDecks = personalDecksModel
 
