@@ -121,10 +121,10 @@ class SyncThread(QThread):
             print "Network is NOT accessible"
             return False
         return True
-    
+
     def _goOffline(self):
         self.syncSession.close()
-    
+
     def run(self):
         print "Sync Thread started"
         self.emit(SIGNAL("stateChanged(QString)"), "Connecting")
