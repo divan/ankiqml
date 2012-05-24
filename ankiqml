@@ -155,18 +155,14 @@ class SyncThread(QThread):
             (syncName, localMod, localSync) = c.execute(
                         "select syncName, modified, lastSync from decks").fetchone()
             c.close()
-            print syncName
-            print modified
-            print lastSync
             if not syncName:
                 print "SyncName not specified"
-                self.emit(SIGNAL("stateChanged(QString)"), "")
-                return -2
+                syncName = os.path.splitext(os.path.basename(self.deckWrapper.path))[0]
+                print "Using " + syncName
         except Exception, e:
             self.emit(SIGNAL("stateChanged(QString)"), "")
             print e
             return
-        syncName = os.path.splitext(os.path.basename(self.deckWrapper.path))[0]
         if not self._goOnline():
             self.emit(SIGNAL("stateChanged(QString)"), "")
             return
