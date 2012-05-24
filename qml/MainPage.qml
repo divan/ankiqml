@@ -105,6 +105,4 @@ Page {
         if (value == 100)
             ankiDecks.toggleView();
     }
-    
-    //Component.onCompleted: mainPage.updateDecks()
 }

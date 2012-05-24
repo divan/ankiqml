@@ -47,4 +47,5 @@ PageStackWindow {
     }
 
     showStatusBar: false
+    Component.onCompleted: mainPage.updateDecks()
 }
