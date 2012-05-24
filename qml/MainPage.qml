@@ -90,7 +90,7 @@ Page {
     function syncPersonalDecks() {
         pageStack.push(Qt.createComponent("PersonalDecksPage.qml"));
     }
-
+    
     function openSettings() {
         pageStack.push(Qt.createComponent("SettingsPage.qml"));
     }
@@ -98,13 +98,13 @@ Page {
     function addNewDeck() {
         addNewDialog.open();
     }
-
+    
     function toggleView(value) {
         updateProgress.visible = (value < 100);
         updateProgress.value = value;
         if (value == 100)
             ankiDecks.toggleView();
     }
-
+    
     //Component.onCompleted: mainPage.updateDecks()
 }
