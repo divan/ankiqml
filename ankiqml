@@ -142,22 +142,30 @@ class SyncThread(QThread):
             print "Network is NOT accessible"
             return False
         return True
-
+    
     def _goOffline(self):
         self.syncSession.close()
-
+    
     def run(self):
         print "Sync Thread started"
-        self.emit(SIGNAL("stateChanged(QString)"), "Connecting")
-        sqlpath = self.deckWrapper.path.encode("utf-8")
-        c = sqlite.connect(sqlpath)
-        (syncName, localMod, localSync) = c.execute(
-                    "select syncName, modified, lastSync from decks").fetchone()
-        c.close()
-        if not syncName:
-            print "SyncName not specified"
+        try:
+            self.emit(SIGNAL("stateChanged(QString)"), "Connecting")
+            sqlpath = self.deckWrapper.path.encode("utf-8")
+            c = sqlite.connect(sqlpath)
+            (syncName, localMod, localSync) = c.execute(
+                        "select syncName, modified, lastSync from decks").fetchone()
+            c.close()
+            print syncName
+            print modified
+            print lastSync
+            if not syncName:
+                print "SyncName not specified"
+                self.emit(SIGNAL("stateChanged(QString)"), "")
+                return -2
+        except Exception, e:
             self.emit(SIGNAL("stateChanged(QString)"), "")
-            return -2
+            print e
+            return
         syncName = os.path.splitext(os.path.basename(self.deckWrapper.path))[0]
         if not self._goOnline():
             self.emit(SIGNAL("stateChanged(QString)"), "")
