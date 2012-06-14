@@ -53,7 +53,10 @@ Page {
             }
             MenuItem {
                 text: qsTr("Update decks info")
-                onClicked: updateDecks()
+                onClicked: {
+                    decksUpdateTrigger();
+                    updateDecks();
+                }
             }
             MenuItem {
                 text: qsTr("Settings")
