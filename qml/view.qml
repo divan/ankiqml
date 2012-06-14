@@ -6,6 +6,7 @@ PageStackWindow {
 
     initialPage: mainPage
     signal deckUpdated
+    property bool decksNeedUpdate: true;
 
     MainPage {id: mainPage}
 
@@ -42,8 +43,11 @@ PageStackWindow {
     }
 
     function updateReloadProgress(value ) {
-        console.log("Update Progress " + value);
         mainPage.toggleView(value);
+    }
+
+    function decksUpdateTrigger() {
+        decksNeedUpdate = true;
     }
 
     showStatusBar: false

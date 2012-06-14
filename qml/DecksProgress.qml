@@ -3,11 +3,13 @@ import com.nokia.meego 1.0
 
 Rectangle {
     id: decksProgress
-    width: busyIndicator.width 
+    width: busyIndicator.width
     height: busyIndicator.height
     anchors.centerIn: parent
     visible: false
-    color: "transparent"
+    border.color: "gray"
+    border.width: 2
+    color: "white"
     property int value: 0
     BusyIndicator {
         id: busyIndicator

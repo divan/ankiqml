@@ -70,5 +70,6 @@ Page {
     Component.onCompleted: {
         ankiStudy.startStudy(); 
         updateStatsInfo();
+        decksUpdateTrigger();
     }
 }

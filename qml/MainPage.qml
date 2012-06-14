@@ -14,8 +14,8 @@ Page {
             var name = addNewDialog.getName();
             if (Deck.addDeck(name))
             {
+                decksUpdateTrigger();
                 pageStack.push(Qt.createComponent("DeckPage.qml"), { deckName: name });
-                updateDecks();
             }
         }
     }
@@ -49,7 +49,7 @@ Page {
         content: MenuLayout {
             MenuItem {
                 text: qsTr("Sync Personal Decks")
-                onClicked:syncPersonalDecks()
+                onClicked: syncPersonalDecks()
             }
             MenuItem {
                 text: qsTr("Update decks info")
@@ -64,7 +64,10 @@ Page {
 
     function updateDecks()
     {
+        if (root.decksNeedUpdate == false)
+            return;
         decksModel.reload();
+        root.decksNeedUpdate = false;
     }
 
     function syncPersonalDecks() {
@@ -84,5 +87,12 @@ Page {
         updateProgress.value = value;
         if (value == 100)
             ankiDecks.toggleView();
+    }
+
+    onStatusChanged: {
+        if (status == PageStatus.Activating)
+        {
+            updateDecks();
+        }
     }
 }
