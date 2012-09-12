@@ -1,7 +1,7 @@
 #!/usr/bin/python2.6
 
 import sys, os, time, re
-sys.path[0] = "/usr/share/ankiqml"
+sys.path[0] = "/opt/ankiqml/"
 
 from PySide import QtCore
 from PySide.QtGui import *
@@ -594,7 +594,7 @@ class PersonalDecksModel(QAbstractListModel):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     view = QDeclarativeView()
-    url = QUrl('/usr/share/ankiqml/qml/view.qml')
+    url = QUrl('/opt/ankiqml/qml/view.qml')
 
     decksModel = DecksModel()
     personalDecksModel = PersonalDecksModel()

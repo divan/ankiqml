@@ -9,8 +9,8 @@ The Deck
 __docformat__ = 'restructuredtext'
 
 import tempfile, time, os, random, sys, re, stat, shutil
-sys.path.append('/usr/share/ankiqml/anki/simplejson')
-sys.path.append('/usr/share/ankiqml/anki/sqlalchemy')
+sys.path.append('/opt/ankiqml/anki/simplejson')
+sys.path.append('/opt/ankiqml/anki/sqlalchemy')
 import types, traceback, simplejson, datetime
 
 from anki.db import *

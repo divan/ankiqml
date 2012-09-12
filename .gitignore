@@ -2,3 +2,5 @@ deb_dist/
 sdist-dsc.log
 anki/*.pyc
 anki/template/*.pyc
+./ankiqml*.deb
+build/opt/

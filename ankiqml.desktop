@@ -3,6 +3,6 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Name=Anki
-Exec=invoker --splash=/usr/share/ankiqml/images/splash.jpg --splash-landscape=/usr/share/ankiqml/images/splash-l.jpg --single-instance --type=e /usr/bin/ankiqml
+Exec=invoker --splash=/opt/ankiqml/images/splash.jpg --splash-landscape=/opt/ankiqml/images/splash-l.jpg --single-instance --type=e /opt/ankiqml/bin/ankiqml
 Icon=/usr/share/icons/hicolor/64x64/apps/ankiqml.png
 Categories=Education;
