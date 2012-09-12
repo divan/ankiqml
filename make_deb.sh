@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 VERSION=0.1.0
 DEB_NAME=ankiqml-$VERSION-1_i386.deb
@@ -27,14 +27,12 @@ echo "Calculating digsigsums..."
 python $BUILD_DIR/digsigsums.py ./build/
 
 echo "Building deb..."
-pushd $BUILD_DIR > /dev/null
-fakeroot tar czf data.tar.gz opt/ usr/
-pushd DEBIAN > /dev/null
-tar czf ../control.tar.gz *
-popd > /dev/null
-ar -r ../$DEB_NAME debian-binary control.tar.gz data.tar.gz
-rm -rf control.tar.gz data.tar.gz
-popd > /dev/null
+fakeroot tar -C $BUILD_DIR -czf $BUILD_DIR/data.tar.gz opt/ usr/
+tar -C $BUILD_DIR/DEBIAN -czf $BUILD_DIR/control.tar.gz .
+ar -r $DEB_NAME $BUILD_DIR/debian-binary \
+    $BUILD_DIR/control.tar.gz \
+    $BUILD_DIR/data.tar.gz
+rm -rf $BUILD_DIR/control.tar.gz $BUILD_DIR/data.tar.gz
 
 echo "Cleaning up..."
 rm -f $BUILD_DIR/DEBIAN/digsigsums
