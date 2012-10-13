@@ -27,12 +27,16 @@ echo "Calculating digsigsums..."
 python $BUILD_DIR/digsigsums.py ./build/
 
 echo "Building deb..."
-fakeroot tar -C $BUILD_DIR -czf $BUILD_DIR/data.tar.gz opt/ usr/
+if [ $(uname -n) != "RM680" ]; then
+   fakeroot tar -C $BUILD_DIR -czf $BUILD_DIR/data.tar.gz opt/ usr/
+else
+   fakeroot -l /usr/lib/libfakeroot/libfakeroot-sysv.so -- tar -C $BUILD_DIR -czf $BUILD_DIR/data.tar.gz opt/ usr/
+fi
 tar -C $BUILD_DIR/DEBIAN -czf $BUILD_DIR/control.tar.gz .
 ar -r $DEB_NAME $BUILD_DIR/debian-binary \
     $BUILD_DIR/control.tar.gz \
     $BUILD_DIR/data.tar.gz
-rm -rf $BUILD_DIR/control.tar.gz $BUILD_DIR/data.tar.gz
+#rm -rf $BUILD_DIR/control.tar.gz $BUILD_DIR/data.tar.gz
 
 echo "Cleaning up..."
 rm -f $BUILD_DIR/DEBIAN/digsigsums
